@@ -6,686 +6,715 @@
   <title>Perm-etikett Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f0f2f5;
+      background: #f5f6f8;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
+    /* ── Header ── */
     header {
-      background: #1a1a2e;
-      color: white;
-      padding: 18px 32px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 32px;
       display: flex;
       align-items: center;
-      gap: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      gap: 12px;
     }
 
-    header svg { flex-shrink: 0; }
-
-    header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    .header-logo {
+      width: 36px; height: 36px;
+      background: #111827;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
     }
 
-    header p {
-      font-size: 0.78rem;
-      color: #a0a8c0;
-      margin-top: 2px;
-    }
+    header h1 { font-size: 1.05rem; font-weight: 700; color: #111827; }
+    header p  { font-size: 0.78rem; color: #6b7280; margin-top: 1px; }
 
-    .layout {
-      display: flex;
-      flex: 1;
-      gap: 0;
-    }
+    /* ── Layout ── */
+    .layout { display: flex; flex: 1; overflow: hidden; }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 360px;
-      flex-shrink: 0;
-      background: white;
+      width: 320px; flex-shrink: 0;
+      background: #ffffff;
       border-right: 1px solid #e5e7eb;
-      padding: 28px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
+      padding: 24px 20px;
       overflow-y: auto;
+      display: flex; flex-direction: column; gap: 20px;
     }
 
-    .section-title {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #6b7280;
-      margin-bottom: 12px;
+    .section-label {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #9ca3af; margin-bottom: 10px;
     }
 
-    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
 
-    label {
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: #374151;
-    }
+    label { font-size: 0.8rem; font-weight: 500; color: #374151; }
 
     input[type="text"],
     input[type="number"],
     select {
-      padding: 9px 12px;
-      border: 1.5px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      padding: 8px 11px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 7px;
+      font-size: 0.875rem;
       font-family: inherit;
       color: #111827;
-      transition: border-color 0.15s;
+      background: #fafafa;
       outline: none;
       width: 100%;
+      transition: border-color .15s, background .15s;
     }
-
-    input:focus, select:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.12); }
-
-    /* Color pickers */
-    .color-row { display: flex; gap: 10px; }
-    .color-field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-    input[type="color"] {
-      width: 100%;
-      height: 38px;
-      border: 1.5px solid #d1d5db;
-      border-radius: 8px;
-      cursor: pointer;
-      padding: 2px 4px;
-      background: white;
+    input:focus, select:focus {
+      border-color: #111827;
+      background: #fff;
     }
 
     /* Logo upload */
-    .logo-upload {
-      border: 2px dashed #d1d5db;
-      border-radius: 10px;
-      padding: 18px;
+    .logo-drop {
+      border: 1.5px dashed #d1d5db;
+      border-radius: 8px;
+      padding: 14px;
       text-align: center;
       cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color .2s, background .2s;
       position: relative;
     }
-    .logo-upload:hover { border-color: #4f46e5; background: #f5f3ff; }
-    .logo-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .logo-upload p { font-size: 0.82rem; color: #6b7280; margin-top: 6px; }
-    .logo-preview { max-height: 60px; max-width: 180px; object-fit: contain; margin: 0 auto 8px; display: block; }
+    .logo-drop:hover { border-color: #111827; background: #f9fafb; }
+    .logo-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+    .logo-drop p { font-size: 0.75rem; color: #9ca3af; margin-top: 6px; line-height: 1.4; }
+    #logo-thumb { max-height: 48px; max-width: 160px; object-fit: contain; margin: 0 auto 6px; display: none; }
+
+    /* Color accent row */
+    .color-row { display: flex; gap: 8px; }
+    .color-field { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    input[type="color"] {
+      width: 100%; height: 34px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 7px;
+      padding: 2px 3px;
+      cursor: pointer;
+      background: #fafafa;
+    }
+
+    /* Firma name */
+    .firma-row { display: flex; gap: 8px; }
+
+    hr { border: none; border-top: 1px solid #f3f4f6; }
 
     /* Buttons */
-    .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .btn-stack { display: flex; flex-direction: column; gap: 8px; }
 
     .btn {
-      padding: 11px 16px;
-      border-radius: 9px;
-      font-size: 0.88rem;
-      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.84rem; font-weight: 600;
       font-family: inherit;
-      cursor: pointer;
-      border: none;
+      cursor: pointer; border: none;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: all .15s;
+    }
+    .btn-dark  { background: #111827; color: #fff; }
+    .btn-dark:hover { background: #1f2937; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+    .btn-ghost { background: #f9fafb; color: #374151; border: 1.5px solid #e5e7eb; }
+    .btn-ghost:hover { background: #f3f4f6; }
+    .btn-red   { background: #fff; color: #ef4444; border: 1.5px solid #fca5a5; font-size:.78rem; padding: 7px 12px; }
+    .btn-red:hover { background: #fef2f2; }
+
+    /* ── Preview pane ── */
+    .preview {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 40px 24px;
+      background: #e8eaed;
+      overflow-y: auto;
+    }
+
+    .preview-title {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #9ca3af; margin-bottom: 24px;
+    }
+
+    /* A4 paper simulation */
+    .a4-sheet {
+      background: white;
+      width: 595px; /* A4 at 72dpi */
+      min-height: 842px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.15);
+      border-radius: 2px;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: all 0.15s;
-    }
-
-    .btn-primary {
-      background: #4f46e5;
-      color: white;
-    }
-    .btn-primary:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,0.35); }
-
-    .btn-secondary {
-      background: #f9fafb;
-      color: #374151;
-      border: 1.5px solid #e5e7eb;
-    }
-    .btn-secondary:hover { background: #f3f4f6; }
-
-    .btn-outline {
-      background: white;
-      color: #4f46e5;
-      border: 1.5px solid #4f46e5;
-    }
-    .btn-outline:hover { background: #f5f3ff; }
-
-    /* ── Preview area ── */
-    .preview-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 40px 32px;
-      background: #e8eaf0;
-    }
-
-    .preview-label-wrap {
-      position: relative;
-    }
-
-    .preview-hint {
-      font-size: 0.75rem;
-      color: #9ca3af;
-      text-align: center;
-      margin-top: 16px;
-    }
-
-    /* Size selector */
-    .size-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-
-    .size-btn {
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1.5px solid #d1d5db;
-      background: white;
-      color: #6b7280;
-      transition: all 0.15s;
-    }
-    .size-btn.active {
-      background: #4f46e5;
-      color: white;
-      border-color: #4f46e5;
     }
 
     /* ── THE LABEL ── */
-    #label {
-      background: white;
-      overflow: hidden;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-      border-radius: 4px;
+    .label-wrap {
       position: relative;
+      display: inline-block;
+    }
+
+    /* Cut guides */
+    .cut-guide {
+      position: absolute;
+      border: 1px dashed #cbd5e1;
+      pointer-events: none;
+      inset: -10px;
+    }
+    .cut-corner {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-color: #94a3b8;
+      border-style: solid;
+    }
+    .cut-corner.tl { top: -10px; left: -10px; border-width: 1px 0 0 1px; }
+    .cut-corner.tr { top: -10px; right: -10px; border-width: 1px 1px 0 0; }
+    .cut-corner.bl { bottom: -10px; left: -10px; border-width: 0 0 1px 1px; }
+    .cut-corner.br { bottom: -10px; right: -10px; border-width: 0 1px 1px 0; }
+
+    #label {
+      width: 360px;       /* ~95mm */
+      min-height: 200px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
     }
 
-    /* Scale wrapper so label fits on screen */
-    .label-scaler {
-      transform-origin: top center;
-    }
-
-    .label-accent {
+    /* Top accent bar */
+    .lbl-accent {
+      height: 5px;
       width: 100%;
+      background: #111827;
     }
 
-    .label-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-    }
-
-    .label-top {
+    /* Logo + firma header */
+    .lbl-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 22px 14px;
-      border-bottom: 1px solid #e5e7eb;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid #f3f4f6;
     }
 
-    .label-logo {
-      max-height: 48px;
-      max-width: 130px;
-      object-fit: contain;
+    .lbl-firma-block {
+      display: flex; align-items: center; gap: 8px;
     }
 
-    .label-logo-placeholder {
-      height: 48px;
-      width: 130px;
+    #lbl-logo { max-height: 32px; max-width: 100px; object-fit: contain; display: none; }
+
+    .lbl-firma-name {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: .04em;
+      color: #374151;
+      text-transform: uppercase;
+    }
+
+    .lbl-tag {
+      font-size: 0.6rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #9ca3af;
+      padding: 3px 7px;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+    }
+
+    /* Main content */
+    .lbl-body {
+      padding: 18px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .lbl-type {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .lbl-number {
+      font-size: 0.95rem; font-weight: 700;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+
+    .lbl-name {
+      font-size: 1.45rem; font-weight: 800;
+      color: #111827;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      margin-bottom: 16px;
+    }
+
+    .lbl-divider {
+      width: 32px; height: 3px;
+      border-radius: 2px;
+      background: #111827;
+      margin-bottom: 14px;
+    }
+
+    .lbl-meta {
+      display: flex; flex-direction: column; gap: 7px;
+    }
+
+    .lbl-row {
+      display: flex; align-items: baseline; gap: 10px;
+    }
+
+    .lbl-key {
+      font-size: 0.6rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #9ca3af;
+      width: 80px; flex-shrink: 0;
+    }
+
+    .lbl-val {
+      font-size: 0.82rem; font-weight: 500;
+      color: #111827;
+    }
+
+    /* Footer with year */
+    .lbl-footer {
+      margin-top: 18px;
+      padding: 10px 18px;
+      background: #111827;
       display: flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      background: #f3f4f6;
-      color: #9ca3af;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
+      justify-content: space-between;
     }
 
-    .label-year {
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+    .lbl-footer-text {
+      font-size: 0.6rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+    }
+
+    .lbl-year {
+      font-size: 1.3rem; font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -.04em;
       line-height: 1;
     }
 
-    .label-main {
-      flex: 1;
-      padding: 18px 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .preview-hint {
+      font-size: 0.72rem; color: #9ca3af;
+      margin-top: 20px; text-align: center;
+      line-height: 1.5;
     }
 
-    .label-project-number {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
+    /* ── PRINT ── */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+
+      body > * { display: none !important; }
+      body { background: white; }
+
+      #print-zone {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      .print-label-wrap { position: relative; }
+
+      .print-cut {
+        position: absolute;
+        border: 0.3pt dashed #aaa;
+        inset: -6mm;
+        pointer-events: none;
+      }
+
+      .print-corner {
+        position: absolute;
+        width: 4mm; height: 4mm;
+        border-color: #888; border-style: solid;
+      }
+      .print-corner.tl { top: -6mm; left: -6mm; border-width: .3pt 0 0 .3pt; }
+      .print-corner.tr { top: -6mm; right: -6mm; border-width: .3pt .3pt 0 0; }
+      .print-corner.bl { bottom: -6mm; left: -6mm; border-width: 0 0 .3pt .3pt; }
+      .print-corner.br { bottom: -6mm; right: -6mm; border-width: 0 .3pt .3pt 0; }
     }
 
-    .label-project-name {
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      margin-bottom: 14px;
-    }
-
-    .label-divider {
-      height: 2px;
-      width: 48px;
-      border-radius: 2px;
-      margin-bottom: 14px;
-    }
-
-    .label-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .label-meta-row {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-
-    .label-meta-key {
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      width: 90px;
-      flex-shrink: 0;
-      opacity: 0.55;
-    }
-
-    .label-meta-val {
-      font-size: 0.82rem;
-      font-weight: 500;
-    }
-
-    .label-footer {
-      padding: 10px 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.15);
-    }
-
-    .label-footer-text {
-      font-size: 0.65rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      opacity: 0.8;
-    }
-
-    /* Corner mark */
-    .label-corner {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 0;
-      height: 0;
-    }
-
-    hr.divider { border: none; border-top: 1px solid #e5e7eb; }
+    #print-zone { display: none; }
   </style>
 </head>
 <body>
 
+<!-- Print zone (hidden on screen) -->
+<div id="print-zone">
+  <div class="print-label-wrap">
+    <div class="print-cut"></div>
+    <div class="print-corner tl"></div>
+    <div class="print-corner tr"></div>
+    <div class="print-corner bl"></div>
+    <div class="print-corner br"></div>
+    <div id="print-label"></div>
+  </div>
+</div>
+
+<!-- Header -->
 <header>
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-    <rect width="32" height="32" rx="8" fill="#4f46e5"/>
-    <rect x="8" y="6" width="16" height="20" rx="2" fill="white" opacity="0.15"/>
-    <rect x="8" y="6" width="16" height="20" rx="2" stroke="white" stroke-width="1.5"/>
-    <path d="M11 11h10M11 15h10M11 19h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-    <rect x="6" y="4" width="3" height="24" rx="1.5" fill="white" opacity="0.4"/>
-  </svg>
+  <div class="header-logo">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <rect x="3" y="2" width="12" height="14" rx="1.5" stroke="white" stroke-width="1.3"/>
+      <path d="M6 6h6M6 9h6M6 12h4" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+      <rect x="2" y="3" width="2" height="12" rx="1" fill="white" opacity=".5"/>
+    </svg>
+  </div>
   <div>
-    <h1>Perm-etikett Generator</h1>
-    <p>Profesjonelle etiketter til prosjektpermer</p>
+    <h1>Perm-etikett</h1>
+    <p>Etikettgenerator for prosjektpermer</p>
   </div>
 </header>
 
 <div class="layout">
   <!-- Sidebar -->
   <aside class="sidebar">
-    <div>
-      <p class="section-title">Prosjektinformasjon</p>
 
+    <div>
+      <p class="section-label">Prosjekt</p>
       <div class="field">
         <label>Prosjektnummer</label>
-        <input type="text" id="inp-number" placeholder="f.eks. 2024-042" />
+        <input type="text" id="inp-nr" placeholder="2025 110" />
       </div>
       <div class="field">
         <label>Prosjektnavn</label>
-        <input type="text" id="inp-name" placeholder="f.eks. Reguleringsplan Sentrum" />
+        <input type="text" id="inp-name" placeholder="Reguleringsplan Sentrum" />
       </div>
       <div class="field">
         <label>Oppdragsgiver</label>
-        <input type="text" id="inp-client" placeholder="f.eks. Statsbygg AS" />
+        <input type="text" id="inp-client" placeholder="Statsbygg AS" />
       </div>
       <div class="field">
         <label>Kommune</label>
-        <input type="text" id="inp-municipality" placeholder="f.eks. Bergen kommune" />
+        <input type="text" id="inp-muni" placeholder="Kristiansand Kommune" />
       </div>
       <div class="field">
         <label>Årstall</label>
-        <input type="number" id="inp-year" placeholder="2024" min="2000" max="2099" />
+        <input type="number" id="inp-year" placeholder="2025" min="2000" max="2099" />
       </div>
     </div>
 
-    <hr class="divider" />
+    <hr />
 
     <div>
-      <p class="section-title">Design</p>
+      <p class="section-label">Firma</p>
+      <div class="field">
+        <label>Firmanavn</label>
+        <input type="text" id="inp-firma" placeholder="Techauge AS" />
+      </div>
+      <div class="field">
+        <label>Logo</label>
+        <div class="logo-drop" id="logo-drop">
+          <input type="file" id="logo-file" accept="image/*" />
+          <img id="logo-thumb" />
+          <svg id="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <rect width="28" height="28" rx="6" fill="#f3f4f6"/>
+            <path d="M7 19l5-6 4 5 3-3.5 4 4.5" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="10" cy="12" r="2" fill="#d1d5db"/>
+          </svg>
+          <p>Klikk eller dra logo hit<br/><span style="font-size:.7rem;color:#d1d5db">PNG · SVG · JPG</span></p>
+        </div>
+        <button class="btn btn-red" style="margin-top:6px;" onclick="removeLogo()">Fjern logo</button>
+      </div>
+    </div>
 
+    <hr />
+
+    <div>
+      <p class="section-label">Farge</p>
       <div class="color-row">
         <div class="color-field">
-          <label>Primærfarge</label>
-          <input type="color" id="color-primary" value="#1a1a2e" />
-        </div>
-        <div class="color-field">
           <label>Aksentfarge</label>
-          <input type="color" id="color-accent" value="#4f46e5" />
+          <input type="color" id="col-accent" value="#111827" />
         </div>
         <div class="color-field">
-          <label>Tekstfarge</label>
-          <input type="color" id="color-text" value="#111827" />
+          <label>Bunntekst</label>
+          <input type="color" id="col-footer-bg" value="#111827" />
         </div>
       </div>
-
-      <div class="field" style="margin-top:14px;">
-        <label>Størrelse</label>
-        <select id="sel-size">
-          <option value="standard">Standard (190 × 297 mm)</option>
-          <option value="halv">Halv (190 × 148 mm)</option>
-          <option value="smal">Smal (60 × 297 mm)</option>
-        </select>
-      </div>
     </div>
 
-    <hr class="divider" />
+    <hr />
 
-    <div>
-      <p class="section-title">Logo</p>
-      <div class="logo-upload" id="logo-drop">
-        <input type="file" id="logo-input" accept="image/*" />
-        <img id="logo-preview-img" class="logo-preview" style="display:none;" />
-        <svg id="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <rect width="32" height="32" rx="8" fill="#f3f4f6"/>
-          <path d="M10 22l5-6 4 5 3-3 4 4" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="12" cy="13" r="2" fill="#9ca3af"/>
-        </svg>
-        <p id="logo-upload-text">Klikk eller dra logo hit<br/><span style="font-size:0.73rem;color:#d1d5db">PNG, SVG, JPG – anbefalt hvit bakgrunn</span></p>
-      </div>
-      <button class="btn btn-secondary" style="margin-top:10px;width:100%;font-size:0.8rem;" onclick="removeLogo()">Fjern logo</button>
-    </div>
-
-    <hr class="divider" />
-
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="exportPDF()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Eksporter som PDF
+    <div class="btn-stack">
+      <button class="btn btn-dark" onclick="exportPDF()">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 2v7.5M5 7l2.5 2.5L10 7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h11" stroke="white" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Eksporter PDF
       </button>
-      <button class="btn btn-outline" onclick="printLabel()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="5" width="12" height="8" rx="1.5" stroke="#4f46e5" stroke-width="1.5"/><path d="M5 5V3h6v2" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"/><rect x="5" y="9" width="6" height="1.5" rx="0.75" fill="#4f46e5"/></svg>
-        Skriv ut
+      <button class="btn btn-ghost" onclick="printLabel()">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="4.5" width="11" height="7" rx="1.5" stroke="#374151" stroke-width="1.3"/><path d="M4.5 4.5V3h6v1.5" stroke="#374151" stroke-width="1.3" stroke-linecap="round"/><rect x="4.5" y="8" width="6" height="1.5" rx=".75" fill="#374151"/></svg>
+        Skriv ut (A4)
       </button>
     </div>
+
   </aside>
 
   <!-- Preview -->
-  <main class="preview-area">
-    <div class="size-bar">
-      <button class="size-btn active" onclick="setSize('standard',this)">Standard 190×297</button>
-      <button class="size-btn" onclick="setSize('halv',this)">Halv 190×148</button>
-      <button class="size-btn" onclick="setSize('smal',this)">Smal 60×297</button>
-    </div>
+  <main class="preview">
+    <p class="preview-title">Forhåndsvisning — A4-ark med kuttemarker</p>
 
-    <div class="preview-label-wrap">
-      <div class="label-scaler" id="label-scaler">
+    <div class="a4-sheet">
+      <div class="label-wrap">
+        <!-- Cut guides -->
+        <div class="cut-guide"></div>
+        <div class="cut-corner tl"></div>
+        <div class="cut-corner tr"></div>
+        <div class="cut-corner bl"></div>
+        <div class="cut-corner br"></div>
+
+        <!-- THE LABEL -->
         <div id="label">
+          <div class="lbl-accent" id="lbl-accent"></div>
 
-          <!-- Accent bar top -->
-          <div class="label-accent" id="label-accent" style="height:10px;"></div>
-
-          <div class="label-body">
-            <!-- Top row: logo + year -->
-            <div class="label-top" id="label-top">
-              <div class="label-logo-placeholder" id="label-logo-placeholder">FIRMA LOGO</div>
-              <img id="label-logo-img" class="label-logo" style="display:none;" />
-              <div class="label-year" id="label-year">2024</div>
+          <div class="lbl-header">
+            <div class="lbl-firma-block">
+              <img id="lbl-logo" />
+              <span class="lbl-firma-name" id="lbl-firma">FIRMA AS</span>
             </div>
+            <span class="lbl-tag">PROSJEKTPERM</span>
+          </div>
 
-            <!-- Main info -->
-            <div class="label-main" id="label-main">
-              <div class="label-project-number" id="label-number"></div>
-              <div class="label-project-name" id="label-name">Prosjektnavn</div>
-              <div class="label-divider" id="label-divider"></div>
-              <div class="label-meta">
-                <div class="label-meta-row" id="row-client">
-                  <span class="label-meta-key">Oppdragsgiver</span>
-                  <span class="label-meta-val" id="label-client">—</span>
-                </div>
-                <div class="label-meta-row" id="row-municipality">
-                  <span class="label-meta-key">Kommune</span>
-                  <span class="label-meta-val" id="label-municipality">—</span>
-                </div>
+          <div class="lbl-body">
+            <div class="lbl-type">Prosjekt</div>
+            <div class="lbl-number" id="lbl-number">—</div>
+            <div class="lbl-name" id="lbl-name">Prosjektnavn</div>
+            <div class="lbl-divider" id="lbl-divider"></div>
+            <div class="lbl-meta">
+              <div class="lbl-row">
+                <span class="lbl-key">Oppdragsgiver</span>
+                <span class="lbl-val" id="lbl-client">—</span>
+              </div>
+              <div class="lbl-row">
+                <span class="lbl-key">Kommune</span>
+                <span class="lbl-val" id="lbl-muni">—</span>
               </div>
             </div>
           </div>
 
-          <!-- Footer -->
-          <div class="label-footer" id="label-footer">
-            <span class="label-footer-text" id="label-footer-left">PROSJEKTPERM</span>
-            <span class="label-footer-text" id="label-footer-right"></span>
+          <div class="lbl-footer" id="lbl-footer">
+            <span class="lbl-footer-text" id="lbl-footer-firma">FIRMA AS</span>
+            <span class="lbl-year" id="lbl-year">2025</span>
           </div>
-
         </div>
+        <!-- END LABEL -->
       </div>
     </div>
 
-    <p class="preview-hint">Forhåndsvisning — faktisk størrelse skalert til skjerm</p>
+    <p class="preview-hint">
+      Skriv ut på A4 → klipp langs stipla linjer → legg i plastlomme på permen
+    </p>
   </main>
 </div>
 
 <script>
-  // ── Dimensions (px at 96dpi → mm: px = mm * 3.7795) ──
-  const SIZES = {
-    standard: { w: 190 * 3.7795, h: 297 * 3.7795, nameFontSize: '2.2rem' },
-    halv:     { w: 190 * 3.7795, h: 148 * 3.7795, nameFontSize: '1.6rem' },
-    smal:     { w:  60 * 3.7795, h: 297 * 3.7795, nameFontSize: '1.1rem' },
-  };
-
-  let currentSize = 'standard';
   let logoDataURL = null;
-
-  function setSize(s, btn) {
-    currentSize = s;
-    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('sel-size').value = s;
-    applySize();
-  }
-
-  document.getElementById('sel-size').addEventListener('change', e => {
-    currentSize = e.target.value;
-    document.querySelectorAll('.size-btn').forEach(b => {
-      b.classList.toggle('active', b.textContent.toLowerCase().includes(currentSize === 'standard' ? '190×297' : currentSize === 'halv' ? '148' : '60'));
-    });
-    applySize();
-  });
-
-  function applySize() {
-    const { w, h, nameFontSize } = SIZES[currentSize];
-    const label = document.getElementById('label');
-    label.style.width  = w + 'px';
-    label.style.height = h + 'px';
-
-    // Scale to fit preview area (max ~700px tall, ~500px wide)
-    const maxW = Math.min(window.innerWidth - 420, 700);
-    const maxH = window.innerHeight - 220;
-    const scale = Math.min(maxW / w, maxH / h, 1);
-    document.getElementById('label-scaler').style.transform = `scale(${scale})`;
-    document.getElementById('label-scaler').style.marginBottom = `${h * scale - h}px`;
-
-    document.getElementById('label-name').style.fontSize = nameFontSize;
-
-    // Smal: hide municipality row if space is tight, adjust layout
-    document.getElementById('label-top').style.flexDirection = currentSize === 'smal' ? 'column' : 'row';
-    document.getElementById('label-top').style.alignItems = currentSize === 'smal' ? 'flex-start' : 'center';
-  }
 
   // ── Live update ──
   function update() {
-    const num   = document.getElementById('inp-number').value.trim();
-    const name  = document.getElementById('inp-name').value.trim();
+    const nr     = document.getElementById('inp-nr').value.trim();
+    const name   = document.getElementById('inp-name').value.trim();
     const client = document.getElementById('inp-client').value.trim();
-    const muni  = document.getElementById('inp-municipality').value.trim();
-    const year  = document.getElementById('inp-year').value.trim();
+    const muni   = document.getElementById('inp-muni').value.trim();
+    const year   = document.getElementById('inp-year').value.trim();
+    const firma  = document.getElementById('inp-firma').value.trim();
+    const accent = document.getElementById('col-accent').value;
+    const footerBg = document.getElementById('col-footer-bg').value;
 
-    const primary = document.getElementById('color-primary').value;
-    const accent  = document.getElementById('color-accent').value;
-    const text    = document.getElementById('color-text').value;
+    document.getElementById('lbl-number').textContent    = nr || '—';
+    document.getElementById('lbl-name').textContent      = name || 'Prosjektnavn';
+    document.getElementById('lbl-client').textContent    = client || '—';
+    document.getElementById('lbl-muni').textContent      = muni || '—';
+    document.getElementById('lbl-year').textContent      = year || new Date().getFullYear();
+    document.getElementById('lbl-firma').textContent     = firma || 'FIRMA AS';
+    document.getElementById('lbl-footer-firma').textContent = firma || 'FIRMA AS';
 
-    // Text
-    document.getElementById('label-number').textContent   = num  ? 'Prosjekt ' + num : '';
-    document.getElementById('label-name').textContent     = name || 'Prosjektnavn';
-    document.getElementById('label-client').textContent   = client || '—';
-    document.getElementById('label-municipality').textContent = muni || '—';
-    document.getElementById('label-year').textContent     = year || new Date().getFullYear();
-    document.getElementById('label-footer-right').textContent = year || '';
-
-    // Colors
-    document.getElementById('label-accent').style.background   = accent;
-    document.getElementById('label-footer').style.background   = primary;
-    document.getElementById('label-year').style.color          = accent;
-    document.getElementById('label-divider').style.background  = accent;
-    document.getElementById('label-number').style.color        = accent;
-
-    document.getElementById('label-name').style.color = text;
-    document.querySelectorAll('.label-meta-val').forEach(el => el.style.color = text);
-    document.querySelectorAll('.label-meta-key').forEach(el => el.style.color = text);
+    document.getElementById('lbl-accent').style.background   = accent;
+    document.getElementById('lbl-divider').style.background  = accent;
+    document.getElementById('lbl-footer').style.background   = footerBg;
   }
 
-  document.querySelectorAll('input[type="text"], input[type="number"], input[type="color"]')
+  document.querySelectorAll('input[type=text], input[type=number], input[type=color]')
     .forEach(el => el.addEventListener('input', update));
 
   // ── Logo ──
-  document.getElementById('logo-input').addEventListener('change', e => {
+  document.getElementById('logo-file').addEventListener('change', e => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = ev => {
       logoDataURL = ev.target.result;
-      document.getElementById('label-logo-img').src = logoDataURL;
-      document.getElementById('label-logo-img').style.display = 'block';
-      document.getElementById('label-logo-placeholder').style.display = 'none';
-      document.getElementById('logo-preview-img').src = logoDataURL;
-      document.getElementById('logo-preview-img').style.display = 'block';
+      ['lbl-logo', 'logo-thumb'].forEach(id => {
+        const el = document.getElementById(id);
+        el.src = logoDataURL;
+        el.style.display = 'block';
+      });
       document.getElementById('logo-icon').style.display = 'none';
-      document.getElementById('logo-upload-text').textContent = file.name;
     };
     reader.readAsDataURL(file);
   });
 
   function removeLogo() {
     logoDataURL = null;
-    document.getElementById('label-logo-img').style.display = 'none';
-    document.getElementById('label-logo-placeholder').style.display = 'flex';
-    document.getElementById('logo-preview-img').style.display = 'none';
-    document.getElementById('logo-icon').style.display = 'block';
-    document.getElementById('logo-upload-text').innerHTML = 'Klikk eller dra logo hit<br/><span style="font-size:0.73rem;color:#d1d5db">PNG, SVG, JPG – anbefalt hvit bakgrunn</span>';
-    document.getElementById('logo-input').value = '';
+    ['lbl-logo', 'logo-thumb'].forEach(id => {
+      const el = document.getElementById(id);
+      el.src = '';
+      el.style.display = 'none';
+    });
+    document.getElementById('logo-icon').style.display = '';
+    document.getElementById('logo-file').value = '';
   }
 
-  // ── Export PDF ──
+  // ── Build label HTML (inline styles for print/PDF) ──
+  function buildLabelHTML() {
+    const nr     = document.getElementById('inp-nr').value.trim() || '—';
+    const name   = document.getElementById('inp-name').value.trim() || 'Prosjektnavn';
+    const client = document.getElementById('inp-client').value.trim() || '—';
+    const muni   = document.getElementById('inp-muni').value.trim() || '—';
+    const year   = document.getElementById('inp-year').value.trim() || new Date().getFullYear();
+    const firma  = document.getElementById('inp-firma').value.trim() || 'FIRMA AS';
+    const accent = document.getElementById('col-accent').value;
+    const footerBg = document.getElementById('col-footer-bg').value;
+
+    const logoTag = logoDataURL
+      ? `<img src="${logoDataURL}" style="max-height:32px;max-width:100px;object-fit:contain;" />`
+      : '';
+
+    return `
+      <div style="font-family:'Inter',Arial,sans-serif;width:360px;background:#fff;border:1px solid #e5e7eb;overflow:hidden;">
+        <div style="height:5px;background:${accent};"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid #f3f4f6;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${logoTag}
+            <span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#374151;text-transform:uppercase;">${firma}</span>
+          </div>
+          <span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;padding:3px 7px;border:1px solid #e5e7eb;border-radius:20px;">PROSJEKTPERM</span>
+        </div>
+        <div style="padding:18px 18px 14px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Prosjekt</div>
+          <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:2px;">${nr}</div>
+          <div style="font-size:23px;font-weight:800;color:#111827;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;">${name}</div>
+          <div style="width:32px;height:3px;border-radius:2px;background:${accent};margin-bottom:14px;"></div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:baseline;gap:10px;">
+              <span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;width:80px;flex-shrink:0;">Oppdragsgiver</span>
+              <span style="font-size:13px;font-weight:500;color:#111827;">${client}</span>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:10px;">
+              <span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;width:80px;flex-shrink:0;">Kommune</span>
+              <span style="font-size:13px;font-weight:500;color:#111827;">${muni}</span>
+            </div>
+          </div>
+        </div>
+        <div style="padding:10px 18px;background:${footerBg};display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);">${firma}</span>
+          <span style="font-size:21px;font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1;">${year}</span>
+        </div>
+      </div>`;
+  }
+
+  // ── Print ──
+  function printLabel() {
+    const pz = document.getElementById('print-label');
+    pz.innerHTML = buildLabelHTML();
+
+    // Inject Google Fonts into print zone for the print window
+    const printWin = window.open('', '_blank', 'width=800,height=600');
+    printWin.document.write(`<!DOCTYPE html><html><head>
+      <title>Perm-etikett</title>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+      <style>
+        @page { size: A4 portrait; margin: 20mm; }
+        body { margin: 0; display: flex; align-items: center; justify-content: center; min-height: calc(297mm - 40mm); background: white; }
+        .wrap { position: relative; display: inline-block; }
+        .cut { position: absolute; inset: -8mm; border: .3pt dashed #bbb; pointer-events: none; }
+        .c { position: absolute; width: 5mm; height: 5mm; border-color: #999; border-style: solid; }
+        .tl { top: -8mm; left: -8mm; border-width: .3pt 0 0 .3pt; }
+        .tr { top: -8mm; right: -8mm; border-width: .3pt .3pt 0 0; }
+        .bl { bottom: -8mm; left: -8mm; border-width: 0 0 .3pt .3pt; }
+        .br { bottom: -8mm; right: -8mm; border-width: 0 .3pt .3pt 0; }
+        .hint { position: absolute; top: -7mm; left: 6mm; font-family: Arial; font-size: 7pt; color: #bbb; white-space: nowrap; }
+      </style></head><body>
+      <div class="wrap">
+        <div class="cut"></div>
+        <div class="c tl"></div><div class="c tr"></div>
+        <div class="c bl"></div><div class="c br"></div>
+        <div class="hint">Klipp langs stipla linje</div>
+        ${buildLabelHTML()}
+      </div>
+      <script>
+        window.onload = function() {
+          document.fonts.ready.then(() => { window.print(); setTimeout(() => window.close(), 500); });
+        };
+      <\/script>
+    </body></html>`);
+    printWin.document.close();
+  }
+
+  // ── PDF export ──
   async function exportPDF() {
     const { jsPDF } = window.jspdf;
+
+    // Render label via html2canvas
     const label = document.getElementById('label');
-    const { w, h } = SIZES[currentSize];
-
-    // Temporarily remove scale for capture
-    const scaler = document.getElementById('label-scaler');
-    const oldTransform = scaler.style.transform;
-    scaler.style.transform = 'scale(1)';
-
+    const scaleF = 3;
     const canvas = await html2canvas(label, {
-      scale: 3,
+      scale: scaleF,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
     });
 
-    scaler.style.transform = oldTransform;
+    // Label physical dimensions (approx 95mm wide, auto-height)
+    const pxPerMm = canvas.width / scaleF / 360 * (25.4 / 96); // px to mm
+    const wMM = 95;
+    const hMM = wMM * (canvas.height / canvas.width);
 
-    // mm dimensions
-    const wMM = 190, hMM = currentSize === 'halv' ? 148 : currentSize === 'smal' ? 297 : 297;
-    const wMM2 = currentSize === 'smal' ? 60 : 190;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    // Center on A4
+    const xOff = (210 - wMM) / 2;
+    const yOff = (297 - hMM) / 2;
 
-    const pdf = new jsPDF({
-      orientation: hMM > wMM2 ? 'portrait' : 'landscape',
-      unit: 'mm',
-      format: [wMM2, hMM],
-    });
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', xOff, yOff, wMM, hMM);
 
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, wMM2, hMM);
+    // Cut marks
+    const ml = xOff - 8, mr = xOff + wMM + 8;
+    const mt = yOff - 8, mb = yOff + hMM + 8;
+    pdf.setDrawColor(180, 180, 180);
+    pdf.setLineWidth(0.1);
+    pdf.setLineDashPattern([1, 1], 0);
+    pdf.rect(xOff - 2, yOff - 2, wMM + 4, hMM + 4);
+    pdf.setLineDashPattern([], 0);
 
     const name = document.getElementById('inp-name').value.trim() || 'etikett';
     pdf.save(`perm-etikett_${name}.pdf`);
   }
 
-  // ── Print ──
-  function printLabel() {
-    const label = document.getElementById('label');
-    const { w, h } = SIZES[currentSize];
-    const wMM = currentSize === 'smal' ? 60 : 190;
-    const hMM = currentSize === 'halv' ? 148 : 297;
-
-    const win = window.open('', '_blank');
-    win.document.write(`
-      <html><head><title>Perm-etikett</title>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-      <style>
-        @page { size: ${wMM}mm ${hMM}mm; margin: 0; }
-        body { margin: 0; padding: 0; }
-        #label { width: ${wMM}mm; height: ${hMM}mm; }
-      </style></head><body>
-      ${label.outerHTML}
-      <script>window.onload=()=>{ window.print(); window.close(); }<\/script>
-      </body></html>
-    `);
-    win.document.close();
-  }
-
   // Init
   document.getElementById('inp-year').value = new Date().getFullYear();
   update();
-  applySize();
-  window.addEventListener('resize', applySize);
 </script>
 </body>
 </html>
