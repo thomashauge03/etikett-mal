@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perm-etikett Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    header svg { flex-shrink: 0; }
+
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      font-size: 0.78rem;
+      color: #a0a8c0;
+      margin-top: 2px;
+    }
+
+    .layout {
+      display: flex;
+      flex: 1;
+      gap: 0;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 360px;
+      flex-shrink: 0;
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      padding: 9px 12px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: #111827;
+      transition: border-color 0.15s;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus, select:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79,70,229,0.12); }
+
+    /* Color pickers */
+    .color-row { display: flex; gap: 10px; }
+    .color-field { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    input[type="color"] {
+      width: 100%;
+      height: 38px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 2px 4px;
+      background: white;
+    }
+
+    /* Logo upload */
+    .logo-upload {
+      border: 2px dashed #d1d5db;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .logo-upload:hover { border-color: #4f46e5; background: #f5f3ff; }
+    .logo-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .logo-upload p { font-size: 0.82rem; color: #6b7280; margin-top: 6px; }
+    .logo-preview { max-height: 60px; max-width: 180px; object-fit: contain; margin: 0 auto 8px; display: block; }
+
+    /* Buttons */
+    .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+
+    .btn {
+      padding: 11px 16px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: #4f46e5;
+      color: white;
+    }
+    .btn-primary:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(79,70,229,0.35); }
+
+    .btn-secondary {
+      background: #f9fafb;
+      color: #374151;
+      border: 1.5px solid #e5e7eb;
+    }
+    .btn-secondary:hover { background: #f3f4f6; }
+
+    .btn-outline {
+      background: white;
+      color: #4f46e5;
+      border: 1.5px solid #4f46e5;
+    }
+    .btn-outline:hover { background: #f5f3ff; }
+
+    /* ── Preview area ── */
+    .preview-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 32px;
+      background: #e8eaf0;
+    }
+
+    .preview-label-wrap {
+      position: relative;
+    }
+
+    .preview-hint {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    /* Size selector */
+    .size-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .size-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid #d1d5db;
+      background: white;
+      color: #6b7280;
+      transition: all 0.15s;
+    }
+    .size-btn.active {
+      background: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+    }
+
+    /* ── THE LABEL ── */
+    #label {
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      border-radius: 4px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Scale wrapper so label fits on screen */
+    .label-scaler {
+      transform-origin: top center;
+    }
+
+    .label-accent {
+      width: 100%;
+    }
+
+    .label-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    .label-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .label-logo {
+      max-height: 48px;
+      max-width: 130px;
+      object-fit: contain;
+    }
+
+    .label-logo-placeholder {
+      height: 48px;
+      width: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #f3f4f6;
+      color: #9ca3af;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .label-year {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .label-main {
+      flex: 1;
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .label-project-number {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .label-project-name {
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .label-divider {
+      height: 2px;
+      width: 48px;
+      border-radius: 2px;
+      margin-bottom: 14px;
+    }
+
+    .label-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .label-meta-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .label-meta-key {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      width: 90px;
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+
+    .label-meta-val {
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .label-footer {
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .label-footer-text {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      opacity: 0.8;
+    }
+
+    /* Corner mark */
+    .label-corner {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 0;
+    }
+
+    hr.divider { border: none; border-top: 1px solid #e5e7eb; }
+  </style>
+</head>
+<body>
+
+<header>
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <rect width="32" height="32" rx="8" fill="#4f46e5"/>
+    <rect x="8" y="6" width="16" height="20" rx="2" fill="white" opacity="0.15"/>
+    <rect x="8" y="6" width="16" height="20" rx="2" stroke="white" stroke-width="1.5"/>
+    <path d="M11 11h10M11 15h10M11 19h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+    <rect x="6" y="4" width="3" height="24" rx="1.5" fill="white" opacity="0.4"/>
+  </svg>
+  <div>
+    <h1>Perm-etikett Generator</h1>
+    <p>Profesjonelle etiketter til prosjektpermer</p>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div>
+      <p class="section-title">Prosjektinformasjon</p>
+
+      <div class="field">
+        <label>Prosjektnummer</label>
+        <input type="text" id="inp-number" placeholder="f.eks. 2024-042" />
+      </div>
+      <div class="field">
+        <label>Prosjektnavn</label>
+        <input type="text" id="inp-name" placeholder="f.eks. Reguleringsplan Sentrum" />
+      </div>
+      <div class="field">
+        <label>Oppdragsgiver</label>
+        <input type="text" id="inp-client" placeholder="f.eks. Statsbygg AS" />
+      </div>
+      <div class="field">
+        <label>Kommune</label>
+        <input type="text" id="inp-municipality" placeholder="f.eks. Bergen kommune" />
+      </div>
+      <div class="field">
+        <label>Årstall</label>
+        <input type="number" id="inp-year" placeholder="2024" min="2000" max="2099" />
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div>
+      <p class="section-title">Design</p>
+
+      <div class="color-row">
+        <div class="color-field">
+          <label>Primærfarge</label>
+          <input type="color" id="color-primary" value="#1a1a2e" />
+        </div>
+        <div class="color-field">
+          <label>Aksentfarge</label>
+          <input type="color" id="color-accent" value="#4f46e5" />
+        </div>
+        <div class="color-field">
+          <label>Tekstfarge</label>
+          <input type="color" id="color-text" value="#111827" />
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:14px;">
+        <label>Størrelse</label>
+        <select id="sel-size">
+          <option value="standard">Standard (190 × 297 mm)</option>
+          <option value="halv">Halv (190 × 148 mm)</option>
+          <option value="smal">Smal (60 × 297 mm)</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div>
+      <p class="section-title">Logo</p>
+      <div class="logo-upload" id="logo-drop">
+        <input type="file" id="logo-input" accept="image/*" />
+        <img id="logo-preview-img" class="logo-preview" style="display:none;" />
+        <svg id="logo-icon" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#f3f4f6"/>
+          <path d="M10 22l5-6 4 5 3-3 4 4" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="13" r="2" fill="#9ca3af"/>
+        </svg>
+        <p id="logo-upload-text">Klikk eller dra logo hit<br/><span style="font-size:0.73rem;color:#d1d5db">PNG, SVG, JPG – anbefalt hvit bakgrunn</span></p>
+      </div>
+      <button class="btn btn-secondary" style="margin-top:10px;width:100%;font-size:0.8rem;" onclick="removeLogo()">Fjern logo</button>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="exportPDF()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Eksporter som PDF
+      </button>
+      <button class="btn btn-outline" onclick="printLabel()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="5" width="12" height="8" rx="1.5" stroke="#4f46e5" stroke-width="1.5"/><path d="M5 5V3h6v2" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round"/><rect x="5" y="9" width="6" height="1.5" rx="0.75" fill="#4f46e5"/></svg>
+        Skriv ut
+      </button>
+    </div>
+  </aside>
+
+  <!-- Preview -->
+  <main class="preview-area">
+    <div class="size-bar">
+      <button class="size-btn active" onclick="setSize('standard',this)">Standard 190×297</button>
+      <button class="size-btn" onclick="setSize('halv',this)">Halv 190×148</button>
+      <button class="size-btn" onclick="setSize('smal',this)">Smal 60×297</button>
+    </div>
+
+    <div class="preview-label-wrap">
+      <div class="label-scaler" id="label-scaler">
+        <div id="label">
+
+          <!-- Accent bar top -->
+          <div class="label-accent" id="label-accent" style="height:10px;"></div>
+
+          <div class="label-body">
+            <!-- Top row: logo + year -->
+            <div class="label-top" id="label-top">
+              <div class="label-logo-placeholder" id="label-logo-placeholder">FIRMA LOGO</div>
+              <img id="label-logo-img" class="label-logo" style="display:none;" />
+              <div class="label-year" id="label-year">2024</div>
+            </div>
+
+            <!-- Main info -->
+            <div class="label-main" id="label-main">
+              <div class="label-project-number" id="label-number"></div>
+              <div class="label-project-name" id="label-name">Prosjektnavn</div>
+              <div class="label-divider" id="label-divider"></div>
+              <div class="label-meta">
+                <div class="label-meta-row" id="row-client">
+                  <span class="label-meta-key">Oppdragsgiver</span>
+                  <span class="label-meta-val" id="label-client">—</span>
+                </div>
+                <div class="label-meta-row" id="row-municipality">
+                  <span class="label-meta-key">Kommune</span>
+                  <span class="label-meta-val" id="label-municipality">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="label-footer" id="label-footer">
+            <span class="label-footer-text" id="label-footer-left">PROSJEKTPERM</span>
+            <span class="label-footer-text" id="label-footer-right"></span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <p class="preview-hint">Forhåndsvisning — faktisk størrelse skalert til skjerm</p>
+  </main>
+</div>
+
+<script>
+  // ── Dimensions (px at 96dpi → mm: px = mm * 3.7795) ──
+  const SIZES = {
+    standard: { w: 190 * 3.7795, h: 297 * 3.7795, nameFontSize: '2.2rem' },
+    halv:     { w: 190 * 3.7795, h: 148 * 3.7795, nameFontSize: '1.6rem' },
+    smal:     { w:  60 * 3.7795, h: 297 * 3.7795, nameFontSize: '1.1rem' },
+  };
+
+  let currentSize = 'standard';
+  let logoDataURL = null;
+
+  function setSize(s, btn) {
+    currentSize = s;
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sel-size').value = s;
+    applySize();
+  }
+
+  document.getElementById('sel-size').addEventListener('change', e => {
+    currentSize = e.target.value;
+    document.querySelectorAll('.size-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent.toLowerCase().includes(currentSize === 'standard' ? '190×297' : currentSize === 'halv' ? '148' : '60'));
+    });
+    applySize();
+  });
+
+  function applySize() {
+    const { w, h, nameFontSize } = SIZES[currentSize];
+    const label = document.getElementById('label');
+    label.style.width  = w + 'px';
+    label.style.height = h + 'px';
+
+    // Scale to fit preview area (max ~700px tall, ~500px wide)
+    const maxW = Math.min(window.innerWidth - 420, 700);
+    const maxH = window.innerHeight - 220;
+    const scale = Math.min(maxW / w, maxH / h, 1);
+    document.getElementById('label-scaler').style.transform = `scale(${scale})`;
+    document.getElementById('label-scaler').style.marginBottom = `${h * scale - h}px`;
+
+    document.getElementById('label-name').style.fontSize = nameFontSize;
+
+    // Smal: hide municipality row if space is tight, adjust layout
+    document.getElementById('label-top').style.flexDirection = currentSize === 'smal' ? 'column' : 'row';
+    document.getElementById('label-top').style.alignItems = currentSize === 'smal' ? 'flex-start' : 'center';
+  }
+
+  // ── Live update ──
+  function update() {
+    const num   = document.getElementById('inp-number').value.trim();
+    const name  = document.getElementById('inp-name').value.trim();
+    const client = document.getElementById('inp-client').value.trim();
+    const muni  = document.getElementById('inp-municipality').value.trim();
+    const year  = document.getElementById('inp-year').value.trim();
+
+    const primary = document.getElementById('color-primary').value;
+    const accent  = document.getElementById('color-accent').value;
+    const text    = document.getElementById('color-text').value;
+
+    // Text
+    document.getElementById('label-number').textContent   = num  ? 'Prosjekt ' + num : '';
+    document.getElementById('label-name').textContent     = name || 'Prosjektnavn';
+    document.getElementById('label-client').textContent   = client || '—';
+    document.getElementById('label-municipality').textContent = muni || '—';
+    document.getElementById('label-year').textContent     = year || new Date().getFullYear();
+    document.getElementById('label-footer-right').textContent = year || '';
+
+    // Colors
+    document.getElementById('label-accent').style.background   = accent;
+    document.getElementById('label-footer').style.background   = primary;
+    document.getElementById('label-year').style.color          = accent;
+    document.getElementById('label-divider').style.background  = accent;
+    document.getElementById('label-number').style.color        = accent;
+
+    document.getElementById('label-name').style.color = text;
+    document.querySelectorAll('.label-meta-val').forEach(el => el.style.color = text);
+    document.querySelectorAll('.label-meta-key').forEach(el => el.style.color = text);
+  }
+
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="color"]')
+    .forEach(el => el.addEventListener('input', update));
+
+  // ── Logo ──
+  document.getElementById('logo-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      logoDataURL = ev.target.result;
+      document.getElementById('label-logo-img').src = logoDataURL;
+      document.getElementById('label-logo-img').style.display = 'block';
+      document.getElementById('label-logo-placeholder').style.display = 'none';
+      document.getElementById('logo-preview-img').src = logoDataURL;
+      document.getElementById('logo-preview-img').style.display = 'block';
+      document.getElementById('logo-icon').style.display = 'none';
+      document.getElementById('logo-upload-text').textContent = file.name;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function removeLogo() {
+    logoDataURL = null;
+    document.getElementById('label-logo-img').style.display = 'none';
+    document.getElementById('label-logo-placeholder').style.display = 'flex';
+    document.getElementById('logo-preview-img').style.display = 'none';
+    document.getElementById('logo-icon').style.display = 'block';
+    document.getElementById('logo-upload-text').innerHTML = 'Klikk eller dra logo hit<br/><span style="font-size:0.73rem;color:#d1d5db">PNG, SVG, JPG – anbefalt hvit bakgrunn</span>';
+    document.getElementById('logo-input').value = '';
+  }
+
+  // ── Export PDF ──
+  async function exportPDF() {
+    const { jsPDF } = window.jspdf;
+    const label = document.getElementById('label');
+    const { w, h } = SIZES[currentSize];
+
+    // Temporarily remove scale for capture
+    const scaler = document.getElementById('label-scaler');
+    const oldTransform = scaler.style.transform;
+    scaler.style.transform = 'scale(1)';
+
+    const canvas = await html2canvas(label, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+    });
+
+    scaler.style.transform = oldTransform;
+
+    // mm dimensions
+    const wMM = 190, hMM = currentSize === 'halv' ? 148 : currentSize === 'smal' ? 297 : 297;
+    const wMM2 = currentSize === 'smal' ? 60 : 190;
+
+    const pdf = new jsPDF({
+      orientation: hMM > wMM2 ? 'portrait' : 'landscape',
+      unit: 'mm',
+      format: [wMM2, hMM],
+    });
+
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, wMM2, hMM);
+
+    const name = document.getElementById('inp-name').value.trim() || 'etikett';
+    pdf.save(`perm-etikett_${name}.pdf`);
+  }
+
+  // ── Print ──
+  function printLabel() {
+    const label = document.getElementById('label');
+    const { w, h } = SIZES[currentSize];
+    const wMM = currentSize === 'smal' ? 60 : 190;
+    const hMM = currentSize === 'halv' ? 148 : 297;
+
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <html><head><title>Perm-etikett</title>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+      <style>
+        @page { size: ${wMM}mm ${hMM}mm; margin: 0; }
+        body { margin: 0; padding: 0; }
+        #label { width: ${wMM}mm; height: ${hMM}mm; }
+      </style></head><body>
+      ${label.outerHTML}
+      <script>window.onload=()=>{ window.print(); window.close(); }<\/script>
+      </body></html>
+    `);
+    win.document.close();
+  }
+
+  // Init
+  document.getElementById('inp-year').value = new Date().getFullYear();
+  update();
+  applySize();
+  window.addEventListener('resize', applySize);
+</script>
+</body>
+</html>
