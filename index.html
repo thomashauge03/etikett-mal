@@ -109,41 +109,34 @@
     .f-year   { font-size:1.55rem; font-weight:900; color:#111827; letter-spacing:-.04em; line-height:1; }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       RYGG LABEL
-       Reelt mål: 60 × 270 mm
-       (Standard bred perm, rygglomme)
-       Skjerm: 227 × 1021 px → scale(0.37)
+       RYGG LABEL — passar plastlomma
+       på ryggen av standard perm
+       Reelt mål: 55 × 145 mm
+       Skjerm: 208 × 548 px
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     #lbl-r {
-      width:227px; height:1021px;
+      width:208px; height:548px;
       background:#fff; border:2px solid #111827;
       font-family:'Inter',Arial,sans-serif;
       display:flex; flex-direction:column; overflow:hidden;
     }
-    .r-bar    { width:100%; height:8px; flex-shrink:0; }
-    .r-logo   { padding:14px 10px 10px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid #e5e7eb; flex-shrink:0; min-height:70px; }
-    #r-logo   { max-height:46px; max-width:170px; object-fit:contain; display:none; }
-    .r-firma  { font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#374151; text-align:center; }
-    .r-body   { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 12px; gap:12px; }
-    .r-nr     { font-size:.78rem; font-weight:700; color:#6b7280; letter-spacing:.06em; text-align:center; }
-    .r-name-w { flex:1; display:flex; align-items:center; justify-content:center; }
-    .r-name   {
-      font-size:1.15rem; font-weight:800; color:#111827;
-      letter-spacing:-.01em; line-height:1.2;
-      writing-mode:vertical-rl; text-orientation:mixed;
-      transform:rotate(180deg); text-align:center;
-      max-height:640px; overflow:hidden; word-break:break-word;
-    }
+    .r-bar    { width:100%; height:6px; flex-shrink:0; }
+    .r-logo   { padding:12px 8px 10px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid #e5e7eb; flex-shrink:0; }
+    #r-logo   { max-height:36px; max-width:150px; object-fit:contain; display:none; }
+    .r-firma  { font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#374151; text-align:center; }
+    .r-body   { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 10px; gap:11px; }
+    .r-over   { font-size:.58rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#9ca3af; text-align:center; }
+    .r-nr     { font-size:.85rem; font-weight:700; color:#111827; letter-spacing:.04em; text-align:center; }
+    .r-name   { font-size:.95rem; font-weight:800; color:#111827; line-height:1.25; text-align:center; word-break:break-word; max-width:180px; letter-spacing:-.01em; }
     .r-divl   { width:20px; height:2px; border-radius:2px; }
-    .r-meta   { display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; }
-    .r-mitem  { display:flex; flex-direction:column; align-items:center; gap:1px; }
+    .r-meta   { display:flex; flex-direction:column; align-items:center; gap:9px; width:100%; }
+    .r-mitem  { display:flex; flex-direction:column; align-items:center; gap:2px; }
     .r-mkey   { font-size:.52rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#9ca3af; }
-    .r-mval   { font-size:.72rem; font-weight:600; color:#111827; text-align:center; word-break:break-word; max-width:190px; }
-    .r-foot   { flex-shrink:0; padding:16px 10px; display:flex; align-items:center; justify-content:center; }
-    .r-year   { font-size:1.7rem; font-weight:900; letter-spacing:-.04em; color:#fff; line-height:1; }
+    .r-mval   { font-size:.72rem; font-weight:600; color:#111827; text-align:center; word-break:break-word; max-width:180px; line-height:1.3; }
+    .r-foot   { flex-shrink:0; padding:12px 8px; display:flex; align-items:center; justify-content:center; }
+    .r-year   { font-size:1.35rem; font-weight:900; letter-spacing:-.03em; color:#fff; line-height:1; }
 
     #rygg-wrap { display:none; }
-    #rygg-scaler { transform-origin:top center; transform:scale(0.37); margin-bottom:calc((1021px * 0.37) - 1021px); }
 
     .preview-hint { font-size:.68rem; color:#9ca3af; margin-top:18px; text-align:center; line-height:1.6; }
   </style>
@@ -165,7 +158,7 @@
       <p class="slabel">Format</p>
       <div class="tabs">
         <button class="tab active" id="tab-f" onclick="setFmt('forside')">Forside<br/><span style="font-size:.65rem;opacity:.6">190×130mm</span></button>
-        <button class="tab" id="tab-r" onclick="setFmt('rygg')">Rygg<br/><span style="font-size:.65rem;opacity:.6">60×270mm</span></button>
+        <button class="tab" id="tab-r" onclick="setFmt('rygg')">Rygg<br/><span style="font-size:.65rem;opacity:.6">55×145mm</span></button>
       </div>
     </div>
 
@@ -259,25 +252,24 @@
           <div class="cut" style="inset:-10px;"></div>
           <div class="cc tl"></div><div class="cc tr"></div>
           <div class="cc bl"></div><div class="cc br"></div>
-          <div id="rygg-scaler">
-            <div id="lbl-r">
-              <div class="r-bar" id="r-bar-t"></div>
-              <div class="r-logo">
-                <img id="r-logo"/>
-                <span class="r-firma" id="r-firma">FIRMA AS</span>
-              </div>
-              <div class="r-body">
-                <div class="r-nr" id="r-nr">—</div>
-                <div class="r-name-w"><div class="r-name" id="r-name">Prosjektnavn</div></div>
-                <div class="r-divl" id="r-divl"></div>
-                <div class="r-meta">
-                  <div class="r-mitem"><span class="r-mkey">Oppdragsgiver</span><span class="r-mval" id="r-client">—</span></div>
-                  <div class="r-mitem"><span class="r-mkey">Kommune</span><span class="r-mval" id="r-muni">—</span></div>
-                </div>
-              </div>
-              <div class="r-foot" id="r-foot"><span class="r-year" id="r-year">2025</span></div>
-              <div class="r-bar" id="r-bar-b"></div>
+          <div id="lbl-r">
+            <div class="r-bar" id="r-bar-t"></div>
+            <div class="r-logo">
+              <img id="r-logo"/>
+              <span class="r-firma" id="r-firma">FIRMA AS</span>
             </div>
+            <div class="r-body">
+              <div class="r-over">Prosjekt</div>
+              <div class="r-nr" id="r-nr">—</div>
+              <div class="r-name" id="r-name">Prosjektnavn</div>
+              <div class="r-divl" id="r-divl"></div>
+              <div class="r-meta">
+                <div class="r-mitem"><span class="r-mkey">Oppdragsgiver</span><span class="r-mval" id="r-client">—</span></div>
+                <div class="r-mitem"><span class="r-mkey">Kommune</span><span class="r-mval" id="r-muni">—</span></div>
+              </div>
+            </div>
+            <div class="r-foot" id="r-foot"><span class="r-year" id="r-year">2025</span></div>
+            <div class="r-bar" id="r-bar-b"></div>
           </div>
         </div>
       </div>
@@ -298,7 +290,7 @@
     document.getElementById('tab-r').classList.toggle('active', f==='rygg');
     document.getElementById('forside-wrap').style.display = f==='forside' ? '' : 'none';
     document.getElementById('rygg-wrap').style.display    = f==='rygg'    ? '' : 'none';
-    document.getElementById('pvtitle').textContent = f==='forside' ? 'Forside — 190 × 130 mm' : 'Rygg — 60 × 270 mm';
+    document.getElementById('pvtitle').textContent = f==='forside' ? 'Forside — 190 × 130 mm' : 'Rygg — 55 × 145 mm';
     document.getElementById('pvhint').textContent  = f==='rygg'
       ? 'Skriv ut på A4 · klipp ut · stikk inn i plastlommen på ryggen av permen'
       : 'Skriv ut på A4 · klipp langs stipla linjer · legg i plastlomme på permen';
@@ -413,36 +405,35 @@
         </div>
       </div>`;
     } else {
-      // RYGG: 60mm × 270mm portrait
-      const W = forPrint ? '60mm' : '227px';
-      const H = forPrint ? '270mm' : '1021px';
+      // RYGG: 55mm × 145mm — passar plastlomma på ryggen av standard perm
+      const W = forPrint ? '55mm' : '208px';
+      const H = forPrint ? '145mm' : '548px';
       const ryggLogoTag = logo
-        ? `<img src="${logo}" style="max-height:${forPrint?'12mm':'46px'};max-width:${forPrint?'48mm':'170px'};object-fit:contain;"/>`
+        ? `<img src="${logo}" style="max-height:${forPrint?'9mm':'36px'};max-width:${forPrint?'40mm':'150px'};object-fit:contain;"/>`
         : `<span style="font-size:${forPrint?'6pt':'11px'};font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#374151;">${firma}</span>`;
       return `<div style="width:${W};height:${H};background:#fff;border:2px solid #111827;font-family:'Inter',Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden;">
-        <div style="width:100%;height:${forPrint?'2.5mm':'8px'};background:${acc};flex-shrink:0;"></div>
-        <div style="padding:${forPrint?'4mm 3mm 3mm':'14px 10px 10px'};display:flex;align-items:center;justify-content:center;border-bottom:1px solid #e5e7eb;flex-shrink:0;min-height:${forPrint?'20mm':'70px'};">${ryggLogoTag}</div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${forPrint?'5mm 3mm':'20px 12px'};gap:${forPrint?'3mm':'10px'};">
-          <div style="font-size:${forPrint?'7pt':'12px'};font-weight:700;color:#6b7280;letter-spacing:.06em;text-align:center;">${nr}</div>
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;">
-            <div style="font-size:${forPrint?'12pt':'1.15rem'};font-weight:800;color:#111827;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);text-align:center;max-height:${forPrint?'130mm':'490px'};overflow:hidden;word-break:break-word;line-height:1.2;">${name}</div>
-          </div>
-          <div style="width:${forPrint?'10mm':'20px'};height:${forPrint?'1mm':'2px'};border-radius:2px;background:${acc};"></div>
-          <div style="display:flex;flex-direction:column;align-items:center;gap:${forPrint?'3mm':'8px'};width:100%;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+        <div style="width:100%;height:${forPrint?'1.8mm':'6px'};background:${acc};flex-shrink:0;"></div>
+        <div style="padding:${forPrint?'3mm 2mm 2.5mm':'12px 8px 10px'};display:flex;align-items:center;justify-content:center;border-bottom:1px solid #e5e7eb;flex-shrink:0;">${ryggLogoTag}</div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${forPrint?'3.5mm 2.5mm':'14px 10px'};gap:${forPrint?'2.8mm':'11px'};">
+          <div style="font-size:${forPrint?'5.5pt':'9px'};font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9ca3af;text-align:center;">Prosjekt</div>
+          <div style="font-size:${forPrint?'8.5pt':'13px'};font-weight:700;color:#111827;letter-spacing:.04em;text-align:center;">${nr}</div>
+          <div style="font-size:${forPrint?'9.5pt':'15px'};font-weight:800;color:#111827;line-height:1.25;text-align:center;word-break:break-word;max-width:${forPrint?'48mm':'180px'};letter-spacing:-.01em;">${name}</div>
+          <div style="width:${forPrint?'5mm':'20px'};height:${forPrint?'.7mm':'2px'};border-radius:2px;background:${acc};"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:${forPrint?'2.4mm':'9px'};width:100%;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:${forPrint?'.5mm':'2px'};">
               <span style="font-size:${forPrint?'5pt':'8px'};font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;">Oppdragsgiver</span>
-              <span style="font-size:${forPrint?'7pt':'11px'};font-weight:600;color:#111827;text-align:center;max-width:${forPrint?'52mm':'190px'};word-break:break-word;">${cl}</span>
+              <span style="font-size:${forPrint?'7pt':'11px'};font-weight:600;color:#111827;text-align:center;max-width:${forPrint?'48mm':'180px'};word-break:break-word;line-height:1.3;">${cl}</span>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:${forPrint?'.5mm':'2px'};">
               <span style="font-size:${forPrint?'5pt':'8px'};font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;">Kommune</span>
-              <span style="font-size:${forPrint?'7pt':'11px'};font-weight:600;color:#111827;text-align:center;max-width:${forPrint?'52mm':'190px'};word-break:break-word;">${muni}</span>
+              <span style="font-size:${forPrint?'7pt':'11px'};font-weight:600;color:#111827;text-align:center;max-width:${forPrint?'48mm':'180px'};word-break:break-word;line-height:1.3;">${muni}</span>
             </div>
           </div>
         </div>
-        <div style="flex-shrink:0;padding:${forPrint?'5mm 3mm':'14px 10px'};background:${foot};display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:${forPrint?'18pt':'1.7rem'};font-weight:900;letter-spacing:-.04em;color:#fff;line-height:1;">${year}</span>
+        <div style="flex-shrink:0;padding:${forPrint?'3mm 2mm':'12px 8px'};background:${foot};display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:${forPrint?'13pt':'1.35rem'};font-weight:900;letter-spacing:-.03em;color:#fff;line-height:1;">${year}</span>
         </div>
-        <div style="width:100%;height:${forPrint?'2.5mm':'8px'};background:${acc};flex-shrink:0;"></div>
+        <div style="width:100%;height:${forPrint?'1.8mm':'6px'};background:${acc};flex-shrink:0;"></div>
       </div>`;
     }
   }
