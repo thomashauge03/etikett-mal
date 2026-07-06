@@ -289,7 +289,7 @@
     document.getElementById('tab-f').classList.toggle('active', f==='forside');
     document.getElementById('tab-r').classList.toggle('active', f==='rygg');
     document.getElementById('forside-wrap').style.display = f==='forside' ? '' : 'none';
-    document.getElementById('rygg-wrap').style.display    = f==='rygg'    ? '' : 'none';
+    document.getElementById('rygg-wrap').style.display    = f==='rygg'    ? 'block' : 'none';
     document.getElementById('pvtitle').textContent = f==='forside' ? 'Forside — 190 × 130 mm' : 'Rygg — 55 × 145 mm';
     document.getElementById('pvhint').textContent  = f==='rygg'
       ? 'Skriv ut på A4 · klipp ut · stikk inn i plastlommen på ryggen av permen'
