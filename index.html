@@ -11,116 +11,83 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f6f8;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    body { font-family: 'Inter', sans-serif; background: #f5f6f8; min-height: 100vh; display: flex; flex-direction: column; }
 
     /* ── Header ── */
     header {
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 16px 32px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      padding: 14px 28px; display: flex; align-items: center; gap: 12px;
     }
-
-    .header-logo {
-      width: 36px; height: 36px;
-      background: #111827;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-    }
-
     header h1 { font-size: 1.05rem; font-weight: 700; color: #111827; }
-    header p  { font-size: 0.78rem; color: #6b7280; margin-top: 1px; }
+    header p  { font-size: 0.76rem; color: #6b7280; margin-top: 1px; }
 
     /* ── Layout ── */
     .layout { display: flex; flex: 1; overflow: hidden; }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 320px; flex-shrink: 0;
-      background: #ffffff;
-      border-right: 1px solid #e5e7eb;
-      padding: 24px 20px;
-      overflow-y: auto;
-      display: flex; flex-direction: column; gap: 20px;
+      width: 300px; flex-shrink: 0;
+      background: #fff; border-right: 1px solid #e5e7eb;
+      padding: 20px 18px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 18px;
     }
 
     .section-label {
-      font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: #9ca3af; margin-bottom: 10px;
+      font-size: 0.67rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: #9ca3af; margin-bottom: 9px;
     }
 
-    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+    .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 9px; }
+    label { font-size: 0.79rem; font-weight: 500; color: #374151; }
 
-    label { font-size: 0.8rem; font-weight: 500; color: #374151; }
-
-    input[type="text"],
-    input[type="number"],
-    select {
-      padding: 8px 11px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 7px;
-      font-size: 0.875rem;
-      font-family: inherit;
-      color: #111827;
-      background: #fafafa;
-      outline: none;
-      width: 100%;
+    input[type="text"], input[type="number"], select {
+      padding: 8px 10px; border: 1.5px solid #e5e7eb;
+      border-radius: 7px; font-size: 0.875rem; font-family: inherit;
+      color: #111827; background: #fafafa; outline: none; width: 100%;
       transition: border-color .15s, background .15s;
     }
-    input:focus, select:focus {
-      border-color: #111827;
-      background: #fff;
+    input:focus, select:focus { border-color: #111827; background: #fff; }
+
+    /* Format tabs */
+    .format-tabs {
+      display: flex; gap: 6px; margin-bottom: 4px;
     }
+    .fmt-btn {
+      flex: 1; padding: 8px 6px; border-radius: 8px;
+      font-size: 0.78rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; border: 1.5px solid #e5e7eb;
+      background: #fafafa; color: #6b7280;
+      transition: all .15s; text-align: center;
+    }
+    .fmt-btn.active { background: #111827; color: #fff; border-color: #111827; }
 
     /* Logo upload */
     .logo-drop {
-      border: 1.5px dashed #d1d5db;
-      border-radius: 8px;
-      padding: 14px;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .2s, background .2s;
-      position: relative;
+      border: 1.5px dashed #d1d5db; border-radius: 8px;
+      padding: 12px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s; position: relative;
     }
     .logo-drop:hover { border-color: #111827; background: #f9fafb; }
     .logo-drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-    .logo-drop p { font-size: 0.75rem; color: #9ca3af; margin-top: 6px; line-height: 1.4; }
-    #logo-thumb { max-height: 48px; max-width: 160px; object-fit: contain; margin: 0 auto 6px; display: none; }
+    .logo-drop p { font-size: 0.72rem; color: #9ca3af; margin-top: 5px; line-height: 1.4; }
+    #logo-thumb { max-height: 40px; max-width: 140px; object-fit: contain; margin: 0 auto 4px; display: none; }
 
-    /* Color accent row */
+    /* Color row */
     .color-row { display: flex; gap: 8px; }
     .color-field { flex: 1; display: flex; flex-direction: column; gap: 5px; }
     input[type="color"] {
-      width: 100%; height: 34px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 7px;
-      padding: 2px 3px;
-      cursor: pointer;
-      background: #fafafa;
+      width: 100%; height: 32px; border: 1.5px solid #e5e7eb;
+      border-radius: 7px; padding: 2px 3px; cursor: pointer; background: #fafafa;
     }
-
-    /* Firma name */
-    .firma-row { display: flex; gap: 8px; }
 
     hr { border: none; border-top: 1px solid #f3f4f6; }
 
     /* Buttons */
     .btn-stack { display: flex; flex-direction: column; gap: 8px; }
-
     .btn {
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.84rem; font-weight: 600;
-      font-family: inherit;
+      padding: 10px 14px; border-radius: 8px;
+      font-size: 0.84rem; font-weight: 600; font-family: inherit;
       cursor: pointer; border: none;
       display: flex; align-items: center; justify-content: center; gap: 7px;
       transition: all .15s;
@@ -129,254 +96,166 @@
     .btn-dark:hover { background: #1f2937; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.2); }
     .btn-ghost { background: #f9fafb; color: #374151; border: 1.5px solid #e5e7eb; }
     .btn-ghost:hover { background: #f3f4f6; }
-    .btn-red   { background: #fff; color: #ef4444; border: 1.5px solid #fca5a5; font-size:.78rem; padding: 7px 12px; }
+    .btn-red   { background: #fff; color: #ef4444; border: 1.5px solid #fca5a5; font-size:.76rem; padding: 6px 10px; }
     .btn-red:hover { background: #fef2f2; }
 
     /* ── Preview pane ── */
     .preview {
-      flex: 1;
-      display: flex; flex-direction: column;
+      flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: flex-start;
-      padding: 40px 24px;
-      background: #e8eaed;
-      overflow-y: auto;
+      padding: 36px 24px; background: #e8eaed; overflow-y: auto;
     }
-
     .preview-title {
-      font-size: 0.72rem; font-weight: 600;
+      font-size: 0.7rem; font-weight: 600;
       letter-spacing: .08em; text-transform: uppercase;
-      color: #9ca3af; margin-bottom: 24px;
+      color: #9ca3af; margin-bottom: 22px;
     }
 
-    /* A4 paper simulation */
+    /* A4 paper */
     .a4-sheet {
-      background: white;
-      width: 595px; /* A4 at 72dpi */
-      min-height: 842px;
-      box-shadow: 0 4px 32px rgba(0,0,0,.15);
-      border-radius: 2px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ── THE LABEL ── */
-    .label-wrap {
-      position: relative;
-      display: inline-block;
+      background: white; width: 595px; min-height: 842px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.15); border-radius: 2px;
+      position: relative; display: flex; align-items: center; justify-content: center;
     }
 
     /* Cut guides */
+    .label-wrap { position: relative; display: inline-block; }
     .cut-guide {
-      position: absolute;
-      border: 1px dashed #cbd5e1;
-      pointer-events: none;
-      inset: -10px;
+      position: absolute; border: 1px dashed #cbd5e1;
+      pointer-events: none; inset: -10px;
     }
-    .cut-corner {
-      position: absolute;
-      width: 12px; height: 12px;
-      border-color: #94a3b8;
-      border-style: solid;
-    }
-    .cut-corner.tl { top: -10px; left: -10px; border-width: 1px 0 0 1px; }
-    .cut-corner.tr { top: -10px; right: -10px; border-width: 1px 1px 0 0; }
-    .cut-corner.bl { bottom: -10px; left: -10px; border-width: 0 0 1px 1px; }
-    .cut-corner.br { bottom: -10px; right: -10px; border-width: 0 1px 1px 0; }
+    .cut-corner { position: absolute; width: 12px; height: 12px; border-color: #94a3b8; border-style: solid; }
+    .cut-corner.tl { top:-10px;left:-10px; border-width:1px 0 0 1px; }
+    .cut-corner.tr { top:-10px;right:-10px; border-width:1px 1px 0 0; }
+    .cut-corner.bl { bottom:-10px;left:-10px; border-width:0 0 1px 1px; }
+    .cut-corner.br { bottom:-10px;right:-10px; border-width:0 1px 1px 0; }
 
-    #label {
-      width: 360px;       /* ~95mm */
-      min-height: 200px;
-      background: #ffffff;
+    /* ══════════════════════════════
+       FORSIDE LABEL  (~95×auto mm)
+    ══════════════════════════════ */
+    #label-forside {
+      width: 360px; background: #fff;
       border: 1px solid #e5e7eb;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      display: flex; flex-direction: column; overflow: hidden;
       font-family: 'Inter', sans-serif;
     }
+    .lbl-accent    { height: 5px; width: 100%; }
+    .lbl-header    { display:flex; align-items:center; justify-content:space-between; padding:12px 16px 10px; border-bottom:1px solid #f3f4f6; }
+    .lbl-firma-block { display:flex; align-items:center; gap:8px; }
+    #lbl-logo-f    { max-height:30px; max-width:90px; object-fit:contain; display:none; }
+    .lbl-firma-name { font-size:.68rem; font-weight:700; letter-spacing:.04em; color:#374151; text-transform:uppercase; }
+    .lbl-tag       { font-size:.58rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#9ca3af; padding:2px 7px; border:1px solid #e5e7eb; border-radius:20px; }
+    .lbl-body      { padding:16px 16px 12px; display:flex; flex-direction:column; }
+    .lbl-type      { font-size:.58rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#9ca3af; margin-bottom:3px; }
+    .lbl-number    { font-size:.92rem; font-weight:700; color:#111827; margin-bottom:2px; }
+    .lbl-name      { font-size:1.4rem; font-weight:800; color:#111827; line-height:1.15; letter-spacing:-.02em; margin-bottom:14px; }
+    .lbl-divider   { width:28px; height:3px; border-radius:2px; margin-bottom:12px; }
+    .lbl-meta      { display:flex; flex-direction:column; gap:6px; }
+    .lbl-row       { display:flex; align-items:baseline; gap:10px; }
+    .lbl-key       { font-size:.58rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#9ca3af; width:76px; flex-shrink:0; }
+    .lbl-val       { font-size:.8rem; font-weight:500; color:#111827; }
+    .lbl-footer    { margin-top:16px; padding:9px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .lbl-footer-text { font-size:.58rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+    .lbl-year      { font-size:1.25rem; font-weight:900; color:#fff; letter-spacing:-.04em; line-height:1; }
 
-    /* Top accent bar */
-    .lbl-accent {
-      height: 5px;
-      width: 100%;
-      background: #111827;
+    /* ══════════════════════════════
+       RYGG LABEL  (60mm × 265mm)
+       Screen: 227px × 1002px → scale 0.38 ≈ 86×380
+    ══════════════════════════════ */
+    #label-rygg {
+      width: 227px;        /* 60mm @ 96dpi */
+      height: 1002px;      /* 265mm @ 96dpi */
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      display: flex; flex-direction: column;
+      overflow: hidden; font-family: 'Inter', sans-serif;
+      position: relative;
     }
 
-    /* Logo + firma header */
-    .lbl-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px 10px;
+    /* Accent bar on left edge (rotated) — just top bar */
+    .rygg-accent-top { width: 100%; height: 6px; flex-shrink: 0; }
+    .rygg-accent-bot { width: 100%; height: 6px; flex-shrink: 0; margin-top: auto; }
+
+    .rygg-logo-block {
+      padding: 18px 14px 12px;
+      display: flex; justify-content: center; flex-shrink: 0;
       border-bottom: 1px solid #f3f4f6;
     }
+    .rygg-logo-block img { max-height: 44px; max-width: 160px; object-fit: contain; }
+    .rygg-logo-placeholder { font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #d1d5db; }
 
-    .lbl-firma-block {
-      display: flex; align-items: center; gap: 8px;
+    .rygg-body {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px 16px; gap: 10px;
     }
 
-    #lbl-logo { max-height: 32px; max-width: 100px; object-fit: contain; display: none; }
-
-    .lbl-firma-name {
-      font-size: 0.7rem; font-weight: 700;
-      letter-spacing: .04em;
-      color: #374151;
-      text-transform: uppercase;
+    .rygg-nr {
+      font-size: .72rem; font-weight: 700; color: #6b7280;
+      letter-spacing: .06em; text-align: center;
     }
 
-    .lbl-tag {
-      font-size: 0.6rem; font-weight: 600;
-      letter-spacing: .08em; text-transform: uppercase;
-      color: #9ca3af;
-      padding: 3px 7px;
-      border: 1px solid #e5e7eb;
-      border-radius: 20px;
+    /* The project name rotated to read along spine (bottom→top) */
+    .rygg-name-wrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      width: 100%;
+    }
+    .rygg-name {
+      font-size: 1.05rem; font-weight: 800; color: #111827;
+      letter-spacing: -.01em; line-height: 1.15;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      text-align: center;
+      max-height: 600px;
+      overflow: hidden;
+      word-break: break-word;
     }
 
-    /* Main content */
-    .lbl-body {
-      padding: 18px 18px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
+    .rygg-divider { width: 24px; height: 2px; border-radius: 2px; margin: 0 auto; }
+
+    .rygg-meta {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      width: 100%;
+    }
+    .rygg-meta-item {
+      display: flex; flex-direction: column; align-items: center; gap: 1px;
+    }
+    .rygg-meta-key {
+      font-size: .5rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: #9ca3af; text-align: center;
+    }
+    .rygg-meta-val {
+      font-size: .68rem; font-weight: 600; color: #111827;
+      text-align: center; word-break: break-word;
     }
 
-    .lbl-type {
-      font-size: 0.6rem; font-weight: 700;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: #9ca3af;
-      margin-bottom: 4px;
+    .rygg-footer {
+      flex-shrink: 0; padding: 14px 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rygg-year {
+      font-size: 1.5rem; font-weight: 900; letter-spacing: -.04em; color: #fff; line-height: 1;
     }
 
-    .lbl-number {
-      font-size: 0.95rem; font-weight: 700;
-      color: #111827;
-      margin-bottom: 2px;
-    }
-
-    .lbl-name {
-      font-size: 1.45rem; font-weight: 800;
-      color: #111827;
-      line-height: 1.15;
-      letter-spacing: -.02em;
-      margin-bottom: 16px;
-    }
-
-    .lbl-divider {
-      width: 32px; height: 3px;
-      border-radius: 2px;
-      background: #111827;
-      margin-bottom: 14px;
-    }
-
-    .lbl-meta {
-      display: flex; flex-direction: column; gap: 7px;
-    }
-
-    .lbl-row {
-      display: flex; align-items: baseline; gap: 10px;
-    }
-
-    .lbl-key {
-      font-size: 0.6rem; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase;
-      color: #9ca3af;
-      width: 80px; flex-shrink: 0;
-    }
-
-    .lbl-val {
-      font-size: 0.82rem; font-weight: 500;
-      color: #111827;
-    }
-
-    /* Footer with year */
-    .lbl-footer {
-      margin-top: 18px;
-      padding: 10px 18px;
-      background: #111827;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .lbl-footer-text {
-      font-size: 0.6rem; font-weight: 600;
-      letter-spacing: .08em; text-transform: uppercase;
-      color: rgba(255,255,255,.5);
-    }
-
-    .lbl-year {
-      font-size: 1.3rem; font-weight: 900;
-      color: #ffffff;
-      letter-spacing: -.04em;
-      line-height: 1;
+    /* Scaler wrapper for rygg preview */
+    #rygg-scaler {
+      transform-origin: top center;
+      transform: scale(0.38);
+      margin-bottom: calc((1002px * 0.38) - 1002px);
     }
 
     .preview-hint {
-      font-size: 0.72rem; color: #9ca3af;
-      margin-top: 20px; text-align: center;
-      line-height: 1.5;
+      font-size: .7rem; color: #9ca3af;
+      margin-top: 18px; text-align: center; line-height: 1.5;
     }
-
-    /* ── PRINT ── */
-    @media print {
-      @page {
-        size: A4 portrait;
-        margin: 15mm;
-      }
-
-      body > * { display: none !important; }
-      body { background: white; }
-
-      #print-zone {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        min-height: 100vh;
-      }
-
-      .print-label-wrap { position: relative; }
-
-      .print-cut {
-        position: absolute;
-        border: 0.3pt dashed #aaa;
-        inset: -6mm;
-        pointer-events: none;
-      }
-
-      .print-corner {
-        position: absolute;
-        width: 4mm; height: 4mm;
-        border-color: #888; border-style: solid;
-      }
-      .print-corner.tl { top: -6mm; left: -6mm; border-width: .3pt 0 0 .3pt; }
-      .print-corner.tr { top: -6mm; right: -6mm; border-width: .3pt .3pt 0 0; }
-      .print-corner.bl { bottom: -6mm; left: -6mm; border-width: 0 0 .3pt .3pt; }
-      .print-corner.br { bottom: -6mm; right: -6mm; border-width: 0 .3pt .3pt 0; }
-    }
-
-    #print-zone { display: none; }
   </style>
 </head>
 <body>
 
-<!-- Print zone (hidden on screen) -->
-<div id="print-zone">
-  <div class="print-label-wrap">
-    <div class="print-cut"></div>
-    <div class="print-corner tl"></div>
-    <div class="print-corner tr"></div>
-    <div class="print-corner bl"></div>
-    <div class="print-corner br"></div>
-    <div id="print-label"></div>
-  </div>
-</div>
-
 <!-- Header -->
 <header>
-  <img src="logo.png" alt="Haugemaskin" style="height:36px;width:auto;object-fit:contain;" />
+  <img src="logo.png" alt="Haugemaskin" style="height:34px;width:auto;object-fit:contain;" />
   <div>
     <h1>Perm-etikett</h1>
     <p>Etikettgenerator for prosjektpermer</p>
@@ -384,8 +263,24 @@
 </header>
 
 <div class="layout">
-  <!-- Sidebar -->
+  <!-- ── Sidebar ── -->
   <aside class="sidebar">
+
+    <div>
+      <p class="section-label">Format</p>
+      <div class="format-tabs">
+        <button class="fmt-btn active" id="btn-forside" onclick="setFormat('forside')">
+          <svg width="12" height="12" viewBox="0 0 12 12" style="margin-right:4px;" fill="none"><rect x="1" y="1" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          Forside
+        </button>
+        <button class="fmt-btn" id="btn-rygg" onclick="setFormat('rygg')">
+          <svg width="12" height="12" viewBox="0 0 12 12" style="margin-right:4px;" fill="none"><rect x="3.5" y="1" width="5" height="10" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          Rygg (60mm)
+        </button>
+      </div>
+    </div>
+
+    <hr />
 
     <div>
       <p class="section-label">Prosjekt</p>
@@ -417,19 +312,19 @@
       <p class="section-label">Firma</p>
       <div class="field">
         <label>Firmanavn</label>
-        <input type="text" id="inp-firma" placeholder="Techauge AS" />
+        <input type="text" id="inp-firma" placeholder="Haugemaskin AS" />
       </div>
       <div class="field">
         <label>Logo</label>
-        <div class="logo-drop" id="logo-drop">
+        <div class="logo-drop">
           <input type="file" id="logo-file" accept="image/*" />
           <img id="logo-thumb" />
-          <svg id="logo-icon" width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="6" fill="#f3f4f6"/>
-            <path d="M7 19l5-6 4 5 3-3.5 4 4.5" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="10" cy="12" r="2" fill="#d1d5db"/>
+          <svg id="logo-icon" width="26" height="26" viewBox="0 0 26 26" fill="none">
+            <rect width="26" height="26" rx="6" fill="#f3f4f6"/>
+            <path d="M6 18l5-6 4 5 3-3 4 4" stroke="#d1d5db" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="11" r="2" fill="#d1d5db"/>
           </svg>
-          <p>Klikk eller dra logo hit<br/><span style="font-size:.7rem;color:#d1d5db">PNG · SVG · JPG</span></p>
+          <p>Klikk eller dra logo hit</p>
         </div>
         <button class="btn btn-red" style="margin-top:6px;" onclick="removeLogo()">Fjern logo</button>
       </div>
@@ -441,12 +336,12 @@
       <p class="section-label">Farge</p>
       <div class="color-row">
         <div class="color-field">
-          <label>Aksentfarge</label>
+          <label>Aksent</label>
           <input type="color" id="col-accent" value="#111827" />
         </div>
         <div class="color-field">
-          <label>Bunntekst</label>
-          <input type="color" id="col-footer-bg" value="#111827" />
+          <label>Bunn</label>
+          <input type="color" id="col-footer" value="#111827" />
         </div>
       </div>
     </div>
@@ -466,58 +361,96 @@
 
   </aside>
 
-  <!-- Preview -->
+  <!-- ── Preview ── -->
   <main class="preview">
-    <p class="preview-title">Forhåndsvisning — A4-ark med kuttemarker</p>
+    <p class="preview-title" id="preview-title">Forside — forhåndsvisning</p>
 
-    <div class="a4-sheet">
-      <div class="label-wrap">
-        <!-- Cut guides -->
+    <div class="a4-sheet" id="a4-sheet">
+
+      <!-- FORSIDE -->
+      <div class="label-wrap" id="wrap-forside">
         <div class="cut-guide"></div>
-        <div class="cut-corner tl"></div>
-        <div class="cut-corner tr"></div>
-        <div class="cut-corner bl"></div>
-        <div class="cut-corner br"></div>
+        <div class="cut-corner tl"></div><div class="cut-corner tr"></div>
+        <div class="cut-corner bl"></div><div class="cut-corner br"></div>
 
-        <!-- THE LABEL -->
-        <div id="label">
-          <div class="lbl-accent" id="lbl-accent"></div>
-
+        <div id="label-forside">
+          <div class="lbl-accent" id="lbl-accent-f"></div>
           <div class="lbl-header">
             <div class="lbl-firma-block">
-              <img id="lbl-logo" />
-              <span class="lbl-firma-name" id="lbl-firma">FIRMA AS</span>
+              <img id="lbl-logo-f" />
+              <span class="lbl-firma-name" id="lbl-firma-f">FIRMA AS</span>
             </div>
             <span class="lbl-tag">PROSJEKTPERM</span>
           </div>
-
           <div class="lbl-body">
             <div class="lbl-type">Prosjekt</div>
-            <div class="lbl-number" id="lbl-number">—</div>
-            <div class="lbl-name" id="lbl-name">Prosjektnavn</div>
-            <div class="lbl-divider" id="lbl-divider"></div>
+            <div class="lbl-number" id="lbl-nr-f">—</div>
+            <div class="lbl-name" id="lbl-name-f">Prosjektnavn</div>
+            <div class="lbl-divider" id="lbl-div-f"></div>
             <div class="lbl-meta">
               <div class="lbl-row">
                 <span class="lbl-key">Oppdragsgiver</span>
-                <span class="lbl-val" id="lbl-client">—</span>
+                <span class="lbl-val" id="lbl-client-f">—</span>
               </div>
               <div class="lbl-row">
                 <span class="lbl-key">Kommune</span>
-                <span class="lbl-val" id="lbl-muni">—</span>
+                <span class="lbl-val" id="lbl-muni-f">—</span>
               </div>
             </div>
           </div>
-
-          <div class="lbl-footer" id="lbl-footer">
-            <span class="lbl-footer-text" id="lbl-footer-firma">FIRMA AS</span>
-            <span class="lbl-year" id="lbl-year">2025</span>
+          <div class="lbl-footer" id="lbl-footer-f">
+            <span class="lbl-footer-text" id="lbl-footertxt-f">FIRMA AS</span>
+            <span class="lbl-year" id="lbl-year-f">2025</span>
           </div>
         </div>
-        <!-- END LABEL -->
       </div>
-    </div>
 
-    <p class="preview-hint">
+      <!-- RYGG -->
+      <div id="wrap-rygg" style="display:none;">
+        <div class="label-wrap">
+          <div class="cut-guide" style="inset:-10px;"></div>
+          <div class="cut-corner tl"></div><div class="cut-corner tr"></div>
+          <div class="cut-corner bl"></div><div class="cut-corner br"></div>
+
+          <div id="rygg-scaler">
+            <div id="label-rygg">
+              <div class="rygg-accent-top" id="rygg-accent-top"></div>
+
+              <div class="rygg-logo-block" id="rygg-logo-block">
+                <img id="lbl-logo-r" style="max-height:44px;max-width:160px;object-fit:contain;display:none;" />
+                <span class="rygg-logo-placeholder" id="rygg-firma-placeholder">FIRMA AS</span>
+              </div>
+
+              <div class="rygg-body">
+                <div class="rygg-nr" id="rygg-nr">2025 110</div>
+                <div class="rygg-name-wrap">
+                  <div class="rygg-name" id="rygg-name">Prosjektnavn</div>
+                </div>
+                <div class="rygg-divider" id="rygg-div"></div>
+                <div class="rygg-meta">
+                  <div class="rygg-meta-item">
+                    <span class="rygg-meta-key">Oppdragsgiver</span>
+                    <span class="rygg-meta-val" id="rygg-client">—</span>
+                  </div>
+                  <div class="rygg-meta-item">
+                    <span class="rygg-meta-key">Kommune</span>
+                    <span class="rygg-meta-val" id="rygg-muni">—</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rygg-footer" id="rygg-footer">
+                <span class="rygg-year" id="rygg-year">2025</span>
+              </div>
+              <div class="rygg-accent-top" id="rygg-accent-bot" style="margin-top:0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /a4-sheet -->
+
+    <p class="preview-hint" id="preview-hint">
       Skriv ut på A4 → klipp langs stipla linjer → legg i plastlomme på permen
     </p>
   </main>
@@ -525,6 +458,24 @@
 
 <script>
   let logoDataURL = null;
+  let currentFormat = 'forside';
+
+  // ── Format switch ──
+  function setFormat(f) {
+    currentFormat = f;
+    document.getElementById('btn-forside').classList.toggle('active', f === 'forside');
+    document.getElementById('btn-rygg').classList.toggle('active', f === 'rygg');
+    document.getElementById('wrap-forside').style.display = f === 'forside' ? '' : 'none';
+    document.getElementById('wrap-rygg').style.display    = f === 'rygg'    ? '' : 'none';
+    if (f === 'rygg') {
+      document.getElementById('preview-title').textContent = 'Rygg (60×265mm) — forhåndsvisning';
+      document.getElementById('preview-hint').textContent  = 'Rygg: klipp ut og stikk inn i plastlommen på ryggen av permen';
+      document.getElementById('a4-sheet').style.alignItems = 'center';
+    } else {
+      document.getElementById('preview-title').textContent = 'Forside — forhåndsvisning';
+      document.getElementById('preview-hint').textContent  = 'Skriv ut på A4 → klipp langs stipla linjer → legg i plastlomme på permen';
+    }
+  }
 
   // ── Live update ──
   function update() {
@@ -532,25 +483,37 @@
     const name   = document.getElementById('inp-name').value.trim();
     const client = document.getElementById('inp-client').value.trim();
     const muni   = document.getElementById('inp-muni').value.trim();
-    const year   = document.getElementById('inp-year').value.trim();
+    const year   = document.getElementById('inp-year').value.trim() || new Date().getFullYear();
     const firma  = document.getElementById('inp-firma').value.trim();
     const accent = document.getElementById('col-accent').value;
-    const footerBg = document.getElementById('col-footer-bg').value;
+    const footer = document.getElementById('col-footer').value;
 
-    document.getElementById('lbl-number').textContent    = nr || '—';
-    document.getElementById('lbl-name').textContent      = name || 'Prosjektnavn';
-    document.getElementById('lbl-client').textContent    = client || '—';
-    document.getElementById('lbl-muni').textContent      = muni || '—';
-    document.getElementById('lbl-year').textContent      = year || new Date().getFullYear();
-    document.getElementById('lbl-firma').textContent     = firma || 'FIRMA AS';
-    document.getElementById('lbl-footer-firma').textContent = firma || 'FIRMA AS';
+    // Forside
+    document.getElementById('lbl-nr-f').textContent       = nr || '—';
+    document.getElementById('lbl-name-f').textContent     = name || 'Prosjektnavn';
+    document.getElementById('lbl-client-f').textContent   = client || '—';
+    document.getElementById('lbl-muni-f').textContent     = muni || '—';
+    document.getElementById('lbl-year-f').textContent     = year;
+    document.getElementById('lbl-firma-f').textContent    = firma || 'FIRMA AS';
+    document.getElementById('lbl-footertxt-f').textContent = firma || 'FIRMA AS';
+    document.getElementById('lbl-accent-f').style.background = accent;
+    document.getElementById('lbl-div-f').style.background    = accent;
+    document.getElementById('lbl-footer-f').style.background = footer;
 
-    document.getElementById('lbl-accent').style.background   = accent;
-    document.getElementById('lbl-divider').style.background  = accent;
-    document.getElementById('lbl-footer').style.background   = footerBg;
+    // Rygg
+    document.getElementById('rygg-nr').textContent     = nr || '—';
+    document.getElementById('rygg-name').textContent   = name || 'Prosjektnavn';
+    document.getElementById('rygg-client').textContent = client || '—';
+    document.getElementById('rygg-muni').textContent   = muni || '—';
+    document.getElementById('rygg-year').textContent   = year;
+    document.getElementById('rygg-firma-placeholder').textContent = firma || 'FIRMA AS';
+    document.getElementById('rygg-accent-top').style.background  = accent;
+    document.getElementById('rygg-accent-bot').style.background  = accent;
+    document.getElementById('rygg-div').style.background         = accent;
+    document.getElementById('rygg-footer').style.background      = footer;
   }
 
-  document.querySelectorAll('input[type=text], input[type=number], input[type=color]')
+  document.querySelectorAll('input[type=text],input[type=number],input[type=color]')
     .forEach(el => el.addEventListener('input', update));
 
   // ── Logo ──
@@ -560,11 +523,17 @@
     const reader = new FileReader();
     reader.onload = ev => {
       logoDataURL = ev.target.result;
-      ['lbl-logo', 'logo-thumb'].forEach(id => {
-        const el = document.getElementById(id);
-        el.src = logoDataURL;
-        el.style.display = 'block';
-      });
+      // Forside logo
+      const lf = document.getElementById('lbl-logo-f');
+      lf.src = logoDataURL; lf.style.display = 'block';
+      document.getElementById('lbl-firma-f').style.display = 'none';
+      // Rygg logo
+      const lr = document.getElementById('lbl-logo-r');
+      lr.src = logoDataURL; lr.style.display = 'block';
+      document.getElementById('rygg-firma-placeholder').style.display = 'none';
+      // Thumb
+      const th = document.getElementById('logo-thumb');
+      th.src = logoDataURL; th.style.display = 'block';
       document.getElementById('logo-icon').style.display = 'none';
     };
     reader.readAsDataURL(file);
@@ -572,17 +541,18 @@
 
   function removeLogo() {
     logoDataURL = null;
-    ['lbl-logo', 'logo-thumb'].forEach(id => {
+    ['lbl-logo-f','lbl-logo-r','logo-thumb'].forEach(id => {
       const el = document.getElementById(id);
-      el.src = '';
-      el.style.display = 'none';
+      el.src = ''; el.style.display = 'none';
     });
+    document.getElementById('lbl-firma-f').style.display = '';
+    document.getElementById('rygg-firma-placeholder').style.display = '';
     document.getElementById('logo-icon').style.display = '';
     document.getElementById('logo-file').value = '';
   }
 
-  // ── Build label HTML (inline styles for print/PDF) ──
-  function buildLabelHTML() {
+  // ── Build forside HTML (inline) ──
+  function buildForsideHTML() {
     const nr     = document.getElementById('inp-nr').value.trim() || '—';
     const name   = document.getElementById('inp-name').value.trim() || 'Prosjektnavn';
     const client = document.getElementById('inp-client').value.trim() || '—';
@@ -590,79 +560,116 @@
     const year   = document.getElementById('inp-year').value.trim() || new Date().getFullYear();
     const firma  = document.getElementById('inp-firma').value.trim() || 'FIRMA AS';
     const accent = document.getElementById('col-accent').value;
-    const footerBg = document.getElementById('col-footer-bg').value;
+    const footer = document.getElementById('col-footer').value;
+    const logoTag = logoDataURL ? `<img src="${logoDataURL}" style="max-height:30px;max-width:90px;object-fit:contain;" />` : '';
+    const firmaTag = logoDataURL ? '' : `<span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#374151;text-transform:uppercase;">${firma}</span>`;
 
+    return `<div style="font-family:'Inter',Arial,sans-serif;width:360px;background:#fff;border:1px solid #e5e7eb;overflow:hidden;">
+      <div style="height:5px;background:${accent};"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;border-bottom:1px solid #f3f4f6;">
+        <div style="display:flex;align-items:center;gap:8px;">${logoTag}${firmaTag}</div>
+        <span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;padding:2px 7px;border:1px solid #e5e7eb;border-radius:20px;">PROSJEKTPERM</span>
+      </div>
+      <div style="padding:16px 16px 12px;">
+        <div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:3px;">Prosjekt</div>
+        <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:2px;">${nr}</div>
+        <div style="font-size:22px;font-weight:800;color:#111827;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px;">${name}</div>
+        <div style="width:28px;height:3px;border-radius:2px;background:${accent};margin-bottom:12px;"></div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;width:76px;flex-shrink:0;">Oppdragsgiver</span>
+            <span style="font-size:13px;font-weight:500;color:#111827;">${client}</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:10px;">
+            <span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;width:76px;flex-shrink:0;">Kommune</span>
+            <span style="font-size:13px;font-weight:500;color:#111827;">${muni}</span>
+          </div>
+        </div>
+      </div>
+      <div style="padding:9px 16px;background:${footer};display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);">${firma}</span>
+        <span style="font-size:20px;font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1;">${year}</span>
+      </div>
+    </div>`;
+  }
+
+  // ── Build rygg HTML (inline, real mm sizes) ──
+  // For print we use actual mm — 60mm wide × 265mm tall
+  function buildRyggHTML(forPrint = false) {
+    const nr     = document.getElementById('inp-nr').value.trim() || '—';
+    const name   = document.getElementById('inp-name').value.trim() || 'Prosjektnavn';
+    const client = document.getElementById('inp-client').value.trim() || '—';
+    const muni   = document.getElementById('inp-muni').value.trim() || '—';
+    const year   = document.getElementById('inp-year').value.trim() || new Date().getFullYear();
+    const firma  = document.getElementById('inp-firma').value.trim() || 'FIRMA AS';
+    const accent = document.getElementById('col-accent').value;
+    const footer = document.getElementById('col-footer').value;
+
+    const w = forPrint ? '60mm' : '227px';
+    const h = forPrint ? '265mm' : '1002px';
     const logoTag = logoDataURL
-      ? `<img src="${logoDataURL}" style="max-height:32px;max-width:100px;object-fit:contain;" />`
-      : '';
+      ? `<img src="${logoDataURL}" style="max-height:${forPrint?'12mm':'44px'};max-width:${forPrint?'48mm':'180px'};object-fit:contain;" />`
+      : `<span style="font-size:${forPrint?'6pt':'10px'};font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#d1d5db;">${firma}</span>`;
 
-    return `
-      <div style="font-family:'Inter',Arial,sans-serif;width:360px;background:#fff;border:1px solid #e5e7eb;overflow:hidden;">
-        <div style="height:5px;background:${accent};"></div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid #f3f4f6;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            ${logoTag}
-            <span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:#374151;text-transform:uppercase;">${firma}</span>
-          </div>
-          <span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;padding:3px 7px;border:1px solid #e5e7eb;border-radius:20px;">PROSJEKTPERM</span>
+    const nameFontSize = forPrint ? '13pt' : '1.05rem';
+
+    return `<div style="font-family:'Inter',Arial,sans-serif;width:${w};height:${h};background:#fff;border:1px solid #e5e7eb;overflow:hidden;display:flex;flex-direction:column;">
+      <div style="width:100%;height:${forPrint?'2mm':'6px'};background:${accent};flex-shrink:0;"></div>
+      <div style="padding:${forPrint?'5mm 4mm 4mm':'18px 14px 12px'};display:flex;justify-content:center;align-items:center;border-bottom:1px solid #f3f4f6;flex-shrink:0;">${logoTag}</div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${forPrint?'6mm 4mm':'24px 16px'};gap:${forPrint?'3mm':'10px'};">
+        <div style="font-size:${forPrint?'7pt':'11px'};font-weight:700;color:#6b7280;letter-spacing:.06em;text-align:center;">${nr}</div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;">
+          <div style="font-size:${nameFontSize};font-weight:800;color:#111827;letter-spacing:-.01em;line-height:1.15;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);text-align:center;max-height:${forPrint?'130mm':'490px'};overflow:hidden;word-break:break-word;">${name}</div>
         </div>
-        <div style="padding:18px 18px 14px;">
-          <div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Prosjekt</div>
-          <div style="font-size:15px;font-weight:700;color:#111827;margin-bottom:2px;">${nr}</div>
-          <div style="font-size:23px;font-weight:800;color:#111827;line-height:1.15;letter-spacing:-.02em;margin-bottom:16px;">${name}</div>
-          <div style="width:32px;height:3px;border-radius:2px;background:${accent};margin-bottom:14px;"></div>
-          <div style="display:flex;flex-direction:column;gap:7px;">
-            <div style="display:flex;align-items:baseline;gap:10px;">
-              <span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;width:80px;flex-shrink:0;">Oppdragsgiver</span>
-              <span style="font-size:13px;font-weight:500;color:#111827;">${client}</span>
-            </div>
-            <div style="display:flex;align-items:baseline;gap:10px;">
-              <span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;width:80px;flex-shrink:0;">Kommune</span>
-              <span style="font-size:13px;font-weight:500;color:#111827;">${muni}</span>
-            </div>
+        <div style="width:${forPrint?'10mm':'24px'};height:${forPrint?'1mm':'2px'};border-radius:2px;background:${accent};margin:0 auto;"></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:${forPrint?'3mm':'6px'};width:100%;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+            <span style="font-size:${forPrint?'5pt':'8px'};font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;text-align:center;">Oppdragsgiver</span>
+            <span style="font-size:${forPrint?'7pt':'11px'};font-weight:600;color:#111827;text-align:center;word-break:break-word;max-width:${forPrint?'50mm':'190px'};">${client}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+            <span style="font-size:${forPrint?'5pt':'8px'};font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;text-align:center;">Kommune</span>
+            <span style="font-size:${forPrint?'7pt':'11px'};font-weight:600;color:#111827;text-align:center;word-break:break-word;max-width:${forPrint?'50mm':'190px'};">${muni}</span>
           </div>
         </div>
-        <div style="padding:10px 18px;background:${footerBg};display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.5);">${firma}</span>
-          <span style="font-size:21px;font-weight:900;color:#fff;letter-spacing:-.04em;line-height:1;">${year}</span>
-        </div>
-      </div>`;
+      </div>
+      <div style="flex-shrink:0;padding:${forPrint?'5mm 4mm':'14px 12px'};background:${footer};display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:${forPrint?'16pt':'1.5rem'};font-weight:900;letter-spacing:-.04em;color:#fff;line-height:1;">${year}</span>
+      </div>
+      <div style="width:100%;height:${forPrint?'2mm':'6px'};background:${accent};flex-shrink:0;"></div>
+    </div>`;
   }
 
   // ── Print ──
   function printLabel() {
-    const pz = document.getElementById('print-label');
-    pz.innerHTML = buildLabelHTML();
+    const isRygg = currentFormat === 'rygg';
+    const content = isRygg ? buildRyggHTML(true) : buildForsideHTML();
+    const pageSize = isRygg ? 'A4 portrait' : 'A4 portrait';
 
-    // Inject Google Fonts into print zone for the print window
     const printWin = window.open('', '_blank', 'width=800,height=600');
     printWin.document.write(`<!DOCTYPE html><html><head>
       <title>Perm-etikett</title>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
       <style>
-        @page { size: A4 portrait; margin: 20mm; }
-        body { margin: 0; display: flex; align-items: center; justify-content: center; min-height: calc(297mm - 40mm); background: white; }
-        .wrap { position: relative; display: inline-block; }
-        .cut { position: absolute; inset: -8mm; border: .3pt dashed #bbb; pointer-events: none; }
-        .c { position: absolute; width: 5mm; height: 5mm; border-color: #999; border-style: solid; }
-        .tl { top: -8mm; left: -8mm; border-width: .3pt 0 0 .3pt; }
-        .tr { top: -8mm; right: -8mm; border-width: .3pt .3pt 0 0; }
-        .bl { bottom: -8mm; left: -8mm; border-width: 0 0 .3pt .3pt; }
-        .br { bottom: -8mm; right: -8mm; border-width: 0 .3pt .3pt 0; }
-        .hint { position: absolute; top: -7mm; left: 6mm; font-family: Arial; font-size: 7pt; color: #bbb; white-space: nowrap; }
+        @page { size: ${pageSize}; margin: 15mm; }
+        body { margin:0; display:flex; align-items:center; justify-content:center; min-height:calc(297mm - 30mm); background:white; }
+        .wrap { position:relative; display:inline-block; }
+        .cut  { position:absolute; inset:-8mm; border:.3pt dashed #bbb; }
+        .c    { position:absolute; width:4mm; height:4mm; border-color:#999; border-style:solid; }
+        .tl   { top:-8mm; left:-8mm; border-width:.3pt 0 0 .3pt; }
+        .tr   { top:-8mm; right:-8mm; border-width:.3pt .3pt 0 0; }
+        .bl   { bottom:-8mm; left:-8mm; border-width:0 0 .3pt .3pt; }
+        .br   { bottom:-8mm; right:-8mm; border-width:0 .3pt .3pt 0; }
+        .hint { position:absolute; top:-7mm; left:5mm; font-family:Arial; font-size:6pt; color:#bbb; white-space:nowrap; }
       </style></head><body>
       <div class="wrap">
         <div class="cut"></div>
         <div class="c tl"></div><div class="c tr"></div>
         <div class="c bl"></div><div class="c br"></div>
         <div class="hint">Klipp langs stipla linje</div>
-        ${buildLabelHTML()}
+        ${content}
       </div>
-      <script>
-        window.onload = function() {
-          document.fonts.ready.then(() => { window.print(); setTimeout(() => window.close(), 500); });
-        };
-      <\/script>
+      <script>window.onload=function(){ document.fonts.ready.then(()=>{ window.print(); setTimeout(()=>window.close(),500); }); };<\/script>
     </body></html>`);
     printWin.document.close();
   }
@@ -670,40 +677,36 @@
   // ── PDF export ──
   async function exportPDF() {
     const { jsPDF } = window.jspdf;
+    const isRygg = currentFormat === 'rygg';
 
-    // Render label via html2canvas
-    const label = document.getElementById('label');
-    const scaleF = 3;
-    const canvas = await html2canvas(label, {
-      scale: scaleF,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: '#ffffff',
+    const labelEl = isRygg
+      ? document.getElementById('label-rygg')
+      : document.getElementById('label-forside');
+
+    // Remove scaler transform temporarily
+    const scaler = document.getElementById('rygg-scaler');
+    const oldT = scaler ? scaler.style.transform : null;
+    if (scaler) scaler.style.transform = 'scale(1)';
+
+    const canvas = await html2canvas(labelEl, {
+      scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#ffffff',
     });
 
-    // Label physical dimensions (approx 95mm wide, auto-height)
-    const pxPerMm = canvas.width / scaleF / 360 * (25.4 / 96); // px to mm
-    const wMM = 95;
-    const hMM = wMM * (canvas.height / canvas.width);
+    if (scaler) scaler.style.transform = oldT;
 
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    // Center on A4
+    const wMM = isRygg ? 60 : 95;
+    const hMM = wMM * (canvas.height / canvas.width);
     const xOff = (210 - wMM) / 2;
     const yOff = (297 - hMM) / 2;
 
     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', xOff, yOff, wMM, hMM);
-
-    // Cut marks
-    const ml = xOff - 8, mr = xOff + wMM + 8;
-    const mt = yOff - 8, mb = yOff + hMM + 8;
-    pdf.setDrawColor(180, 180, 180);
-    pdf.setLineWidth(0.1);
-    pdf.setLineDashPattern([1, 1], 0);
-    pdf.rect(xOff - 2, yOff - 2, wMM + 4, hMM + 4);
-    pdf.setLineDashPattern([], 0);
+    pdf.setDrawColor(180,180,180); pdf.setLineWidth(0.1);
+    pdf.setLineDashPattern([1,1],0);
+    pdf.rect(xOff-2, yOff-2, wMM+4, hMM+4);
 
     const name = document.getElementById('inp-name').value.trim() || 'etikett';
-    pdf.save(`perm-etikett_${name}.pdf`);
+    pdf.save(`perm-etikett_${isRygg?'rygg_':''}${name}.pdf`);
   }
 
   // Init
