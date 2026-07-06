@@ -202,6 +202,12 @@
 
     <hr/>
 
+    <div class="field">
+      <label>Antall kopier</label>
+      <input type="number" id="i-qty" value="1" min="1" max="30"/>
+      <p id="qty-hint" style="font-size:.68rem;color:#9ca3af;margin-top:2px;"></p>
+    </div>
+
     <div class="btn-stack">
       <button class="btn btn-dark" onclick="doPrint()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="4" width="11" height="7" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M4 4V2.5h6V4" stroke="white" stroke-width="1.2" stroke-linecap="round"/><rect x="4" y="7.5" width="6" height="1.5" rx=".75" fill="white"/></svg>
@@ -294,6 +300,7 @@
     document.getElementById('pvhint').textContent  = f==='rygg'
       ? 'Skriv ut på A4 · klipp ut · stikk inn i plastlommen på ryggen av permen'
       : 'Skriv ut på A4 · klipp langs stipla linjer · legg i plastlomme på permen';
+    updateQtyHint();
   }
 
   function update() {
@@ -438,34 +445,64 @@
     }
   }
 
+  // ── Grid capacity (how many labels fit per A4 sheet) ──
+  const PAGE_W = 210, PAGE_H = 297, MARGIN = 10, GAP = 5;
+  function calcGrid(wMM, hMM) {
+    const availW = PAGE_W - 2 * MARGIN;
+    const availH = PAGE_H - 2 * MARGIN;
+    const cols = Math.max(1, Math.floor((availW + GAP) / (wMM + GAP)));
+    const rows = Math.max(1, Math.floor((availH + GAP) / (hMM + GAP)));
+    return { cols, rows, perPage: cols * rows };
+  }
+
+  function updateQtyHint() {
+    const dims = fmt === 'rygg' ? [55, 145] : [190, 130];
+    const g = calcGrid(dims[0], dims[1]);
+    document.getElementById('qty-hint').textContent = `${g.perPage} etikett${g.perPage === 1 ? '' : 'er'} per A4-ark`;
+  }
+  document.getElementById('i-qty').addEventListener('input', updateQtyHint);
+
   // ── Print ──
   function doPrint() {
-    const isRygg = fmt === 'rygg';
-    const content = buildHTML(true);
+    const dims = fmt === 'rygg' ? [55, 145] : [190, 130];
+    const [wMM, hMM] = dims;
+    const g = calcGrid(wMM, hMM);
+    const qty = Math.max(1, parseInt(document.getElementById('i-qty').value, 10) || 1);
+
+    const single = buildHTML(true);
+    let pagesHTML = '';
+    let remaining = qty;
+    while (remaining > 0) {
+      const onThisPage = Math.min(g.perPage, remaining);
+      const cells = Array.from({ length: onThisPage })
+        .map(() => `<div class="cell">${single}</div>`)
+        .join('');
+      pagesHTML += `<div class="sheet" style="grid-template-columns:repeat(${g.cols}, ${wMM}mm);">${cells}</div>`;
+      remaining -= onThisPage;
+    }
+
     const pw = window.open('', '_blank');
     pw.document.write(`<!DOCTYPE html><html><head>
       <meta charset="UTF-8"/>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
       <style>
-        @page { size:A4 portrait; margin:20mm; }
+        @page { size:A4 portrait; margin:${MARGIN}mm; }
         * { box-sizing:border-box; margin:0; padding:0; }
-        body { background:white; display:flex; align-items:center; justify-content:center; min-height:257mm; }
-        .wrap { position:relative; display:inline-block; }
-        .cut  { position:absolute; inset:-7mm; border:.25pt dashed #bbb; pointer-events:none; }
-        .cc   { position:absolute; width:4mm; height:4mm; border-color:#aaa; border-style:solid; }
-        .tl { top:-7mm; left:-7mm; border-width:.3pt 0 0 .3pt; }
-        .tr { top:-7mm; right:-7mm; border-width:.3pt .3pt 0 0; }
-        .bl { bottom:-7mm; left:-7mm; border-width:0 0 .3pt .3pt; }
-        .br { bottom:-7mm; right:-7mm; border-width:0 .3pt .3pt 0; }
-        .hint { position:absolute; top:-6mm; left:5mm; font-family:Arial; font-size:5.5pt; color:#bbb; white-space:nowrap; }
+        body { background:white; }
+        .sheet {
+          display:grid;
+          gap:${GAP}mm;
+          justify-content:center;
+          align-content:start;
+          page-break-after: always;
+        }
+        .sheet:last-child { page-break-after: auto; }
+        .cell {
+          border:.3pt dashed #999;
+          padding:2mm;
+        }
       </style></head><body>
-      <div class="wrap">
-        <div class="cut"></div>
-        <div class="cc tl"></div><div class="cc tr"></div>
-        <div class="cc bl"></div><div class="cc br"></div>
-        <div class="hint">Klipp langs stipla linje</div>
-        ${content}
-      </div>
+      ${pagesHTML}
       <script>
         window.onload = function() {
           document.fonts.ready.then(function() {
@@ -480,6 +517,7 @@
   // Init
   document.getElementById('i-year').value = new Date().getFullYear();
   update();
+  updateQtyHint();
 </script>
 </body>
 </html>
