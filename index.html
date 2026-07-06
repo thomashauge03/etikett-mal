@@ -60,6 +60,15 @@
     .btn-sm-red { background:#fff; color:#ef4444; border:1.5px solid #fca5a5; font-size:.74rem; padding:6px 10px; border-radius:7px; cursor:pointer; font-family:inherit; font-weight:600; margin-top:5px; width:100%; transition:background .15s; }
     .btn-sm-red:hover { background:#fef2f2; }
 
+    .qitem {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      padding:7px 9px; background:#f9fafb; border:1px solid #e5e7eb; border-radius:7px;
+    }
+    .qitem-text { font-size:.76rem; color:#111827; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .qitem-text b { font-weight:700; }
+    .qitem-del { background:none; border:none; color:#ef4444; cursor:pointer; font-size:1rem; line-height:1; padding:0 2px; flex-shrink:0; }
+    .qitem-del:hover { color:#b91c1c; }
+
     /* ── Preview ── */
     .preview { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:32px 20px; background:#dde0e6; overflow-y:auto; }
     .preview-top { font-size:.68rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#9ca3af; margin-bottom:20px; }
@@ -171,9 +180,21 @@
       <div class="field"><label>Oppdragsgiver</label><input type="text" id="i-client" placeholder="Statsbygg AS"/></div>
       <div class="field"><label>Kommune</label><input type="text" id="i-muni" placeholder="Kristiansand Kommune"/></div>
       <div class="field"><label>Årstall</label><input type="number" id="i-year" placeholder="2025" min="2000" max="2099"/></div>
+      <button class="btn btn-ghost" style="width:100%;" onclick="addToQueue()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2.5v9M2.5 7h9" stroke="#374151" stroke-width="1.4" stroke-linecap="round"/></svg>
+        Legg til i utskriftsliste
+      </button>
     </div>
 
     <hr/>
+
+    <div id="queue-section" style="display:none;">
+      <p class="slabel">Utskriftsliste (<span id="queue-count">0</span>)</p>
+      <div id="queue-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;"></div>
+      <button class="btn-sm-red" onclick="clearQueue()">Tøm liste</button>
+    </div>
+
+    <hr id="queue-hr" style="display:none;"/>
 
     <div>
       <p class="slabel">Firma</p>
@@ -203,13 +224,13 @@
     <hr/>
 
     <div class="field">
-      <label>Antall kopier</label>
+      <label id="qty-label">Antall kopier</label>
       <input type="number" id="i-qty" value="1" min="1" max="30"/>
       <p id="qty-hint" style="font-size:.68rem;color:#9ca3af;margin-top:2px;"></p>
     </div>
 
     <div class="btn-stack">
-      <button class="btn btn-dark" onclick="doPrint()">
+      <button class="btn btn-dark" onclick="doPrint()" id="print-btn">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="4" width="11" height="7" rx="1.5" stroke="white" stroke-width="1.2"/><path d="M4 4V2.5h6V4" stroke="white" stroke-width="1.2" stroke-linecap="round"/><rect x="4" y="7.5" width="6" height="1.5" rx=".75" fill="white"/></svg>
         Skriv ut (A4)
       </button>
@@ -367,13 +388,70 @@
     document.getElementById('logo-file').value = '';
   }
 
+  // ── Utskriftsliste (fleire ulike prosjekt på same ark) ──
+  let queue = [];
+
+  function addToQueue() {
+    const item = {
+      nr:    document.getElementById('i-nr').value.trim(),
+      name:  document.getElementById('i-name').value.trim(),
+      cl:    document.getElementById('i-client').value.trim(),
+      muni:  document.getElementById('i-muni').value.trim(),
+      year:  document.getElementById('i-year').value.trim() || new Date().getFullYear(),
+    };
+    if (!item.name && !item.nr) return; // ingenting å legge til
+    queue.push(item);
+    renderQueue();
+    // Nullstill prosjektfelt for neste registrering (behold firma/logo/farge)
+    document.getElementById('i-nr').value = '';
+    document.getElementById('i-name').value = '';
+    document.getElementById('i-client').value = '';
+    document.getElementById('i-muni').value = '';
+    update();
+  }
+
+  function removeFromQueue(idx) {
+    queue.splice(idx, 1);
+    renderQueue();
+  }
+
+  function clearQueue() {
+    queue = [];
+    renderQueue();
+  }
+
+  function renderQueue() {
+    const section = document.getElementById('queue-section');
+    const hr = document.getElementById('queue-hr');
+    const list = document.getElementById('queue-list');
+    document.getElementById('queue-count').textContent = queue.length;
+    section.style.display = queue.length ? '' : 'none';
+    hr.style.display = queue.length ? '' : 'none';
+    list.innerHTML = queue.map((it, i) => `
+      <div class="qitem">
+        <span class="qitem-text"><b>${it.nr || '—'}</b> · ${it.name || 'Prosjektnavn'}</span>
+        <button class="qitem-del" onclick="removeFromQueue(${i})">×</button>
+      </div>`).join('');
+
+    // Oppdater print-knapp og antall-felt basert på om lista er i bruk
+    const qtyField = document.getElementById('i-qty').closest('.field');
+    const printBtn = document.getElementById('print-btn');
+    if (queue.length) {
+      qtyField.style.display = 'none';
+      printBtn.lastChild.textContent = ` Skriv ut liste (${queue.length} stk)`;
+    } else {
+      qtyField.style.display = '';
+      printBtn.lastChild.textContent = ' Skriv ut (A4)';
+    }
+  }
+
   // ── Build inline HTML for print ──
-  function buildHTML(forPrint) {
-    const nr    = document.getElementById('i-nr').value.trim() || '—';
-    const name  = document.getElementById('i-name').value.trim() || 'Prosjektnavn';
-    const cl    = document.getElementById('i-client').value.trim() || '—';
-    const muni  = document.getElementById('i-muni').value.trim() || '—';
-    const year  = document.getElementById('i-year').value.trim() || new Date().getFullYear();
+  function buildHTML(forPrint, data) {
+    const nr    = (data ? data.nr   : document.getElementById('i-nr').value.trim())    || '—';
+    const name  = (data ? data.name : document.getElementById('i-name').value.trim())  || 'Prosjektnavn';
+    const cl    = (data ? data.cl   : document.getElementById('i-client').value.trim())|| '—';
+    const muni  = (data ? data.muni : document.getElementById('i-muni').value.trim())  || '—';
+    const year  = (data ? data.year : document.getElementById('i-year').value.trim())  || new Date().getFullYear();
     const firma = document.getElementById('i-firma').value.trim() || 'FIRMA AS';
     const acc   = document.getElementById('c-accent').value;
     const foot  = document.getElementById('c-footer').value;
@@ -467,18 +545,24 @@
     const dims = fmt === 'rygg' ? [55, 145] : [190, 130];
     const [wMM, hMM] = dims;
     const g = calcGrid(wMM, hMM);
-    const qty = Math.max(1, parseInt(document.getElementById('i-qty').value, 10) || 1);
 
-    const single = buildHTML(true);
+    // Bygg lista av etikett-HTML: frå utskriftslista viss den er i bruk, elles gjenta det gjeldande skjemaet
+    let htmlItems;
+    if (queue.length) {
+      htmlItems = queue.map(item => buildHTML(true, item));
+    } else {
+      const qty = Math.max(1, parseInt(document.getElementById('i-qty').value, 10) || 1);
+      const single = buildHTML(true);
+      htmlItems = Array.from({ length: qty }, () => single);
+    }
+
     let pagesHTML = '';
-    let remaining = qty;
-    while (remaining > 0) {
-      const onThisPage = Math.min(g.perPage, remaining);
-      const cells = Array.from({ length: onThisPage })
-        .map(() => `<div class="cell">${single}</div>`)
-        .join('');
+    let i = 0;
+    while (i < htmlItems.length) {
+      const chunk = htmlItems.slice(i, i + g.perPage);
+      const cells = chunk.map(h => `<div class="cell">${h}</div>`).join('');
       pagesHTML += `<div class="sheet" style="grid-template-columns:repeat(${g.cols}, ${wMM}mm);">${cells}</div>`;
-      remaining -= onThisPage;
+      i += g.perPage;
     }
 
     const pw = window.open('', '_blank');
