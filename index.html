@@ -100,6 +100,11 @@
     .logo-drop input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
     .logo-drop p { font-size:.71rem; color:var(--muted); margin-top:4px; }
     #logo-thumb { max-height:36px; max-width:140px; object-fit:contain; margin:0 auto 3px; display:none; }
+    .preset-logos { margin-top:8px; }
+    .preset-logos-label { font-size:.71rem; color:var(--muted); margin-bottom:5px; }
+    .preset-logo-btn { border:1.5px solid #e5e7eb; border-radius:8px; padding:6px 10px; background:#fff; cursor:pointer; transition:all .15s; }
+    .preset-logo-btn:hover { border-color:var(--brand); background:#fff7f7; }
+    .preset-logo-btn img { height:22px; width:auto; object-fit:contain; display:block; }
 
     .color-row { display:flex; gap:7px; }
     .cfield { flex:1; display:flex; flex-direction:column; gap:4px; }
@@ -278,6 +283,12 @@
           <p>Klikk eller dra logo hit</p>
         </div>
         <button class="btn-sm-red" onclick="removeLogo()">Fjern logo</button>
+        <div class="preset-logos">
+          <p class="preset-logos-label">Eller velg forhåndslogo</p>
+          <button type="button" class="preset-logo-btn" onclick="usePresetLogo('hm-logo.png')">
+            <img src="hm-logo.png" alt="HM logo"/>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -446,6 +457,13 @@
     };
     reader.readAsDataURL(file);
   });
+
+  function usePresetLogo(src) {
+    logo = src;
+    ['f-logo','r-logo','logo-thumb'].forEach(id => { const el=document.getElementById(id); el.src=logo; el.style.display='block'; });
+    document.getElementById('logo-icon').style.display = 'none';
+    update();
+  }
 
   function removeLogo() {
     logo = null;
