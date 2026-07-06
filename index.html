@@ -544,7 +544,10 @@
   function doPrint() {
     const dims = fmt === 'rygg' ? [55, 145] : [190, 130];
     const [wMM, hMM] = dims;
-    const g = calcGrid(wMM, hMM);
+    const CUT_PAD = 2; // avstand mellom etikettkant og stipla klippelinje
+    const cellW = wMM + CUT_PAD * 2;
+    const cellH = hMM + CUT_PAD * 2;
+    const g = calcGrid(cellW, cellH);
 
     // Bygg lista av etikett-HTML: frå utskriftslista viss den er i bruk, elles gjenta det gjeldande skjemaet
     let htmlItems;
@@ -561,7 +564,7 @@
     while (i < htmlItems.length) {
       const chunk = htmlItems.slice(i, i + g.perPage);
       const cells = chunk.map(h => `<div class="cell">${h}</div>`).join('');
-      pagesHTML += `<div class="sheet" style="grid-template-columns:repeat(${g.cols}, ${wMM}mm);">${cells}</div>`;
+      pagesHTML += `<div class="sheet" style="grid-template-columns:repeat(${g.cols}, ${cellW}mm);grid-auto-rows:${cellH}mm;">${cells}</div>`;
       i += g.perPage;
     }
 
@@ -582,8 +585,14 @@
         }
         .sheet:last-child { page-break-after: auto; }
         .cell {
+          width:${cellW}mm;
+          height:${cellH}mm;
           border:.3pt dashed #999;
-          padding:2mm;
+          padding:${CUT_PAD}mm;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          overflow:hidden;
         }
       </style></head><body>
       ${pagesHTML}
