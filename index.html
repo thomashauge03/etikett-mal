@@ -98,7 +98,7 @@
       overflow:hidden;
     }
     .f-top { background:#111827; padding:16px 24px 14px; display:flex; align-items:center; justify-content:space-between; }
-    .f-top-left { display:flex; align-items:center; gap:10px; }
+    .f-top-left { display:flex; flex-direction:column; align-items:flex-start; gap:3px; }
     #f-logo { max-height:36px; max-width:120px; object-fit:contain; display:none; }
     .f-firma { font-size:.82rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:rgba(255,255,255,.85); }
     .f-tag   { font-size:.62rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.45); padding:3px 9px; border:1px solid rgba(255,255,255,.2); border-radius:20px; }
@@ -130,7 +130,7 @@
       display:flex; flex-direction:column; overflow:hidden;
     }
     .r-bar    { width:100%; height:6px; flex-shrink:0; }
-    .r-logo   { padding:12px 8px 10px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid #e5e7eb; flex-shrink:0; }
+    .r-logo   { padding:12px 8px 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; border-bottom:1px solid #e5e7eb; flex-shrink:0; }
     #r-logo   { max-height:36px; max-width:150px; object-fit:contain; display:none; }
     .r-firma  { font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#374151; text-align:center; }
     .r-body   { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px 10px; gap:11px; }
@@ -373,8 +373,6 @@
       logo = ev.target.result;
       ['f-logo','r-logo','logo-thumb'].forEach(id => { const el=document.getElementById(id); el.src=logo; el.style.display='block'; });
       document.getElementById('logo-icon').style.display = 'none';
-      document.getElementById('f-firma').style.display = 'none';
-      document.getElementById('r-firma').style.display = 'none';
     };
     reader.readAsDataURL(file);
   });
@@ -383,8 +381,6 @@
     logo = null;
     ['f-logo','r-logo','logo-thumb'].forEach(id => { const el=document.getElementById(id); el.src=''; el.style.display='none'; });
     document.getElementById('logo-icon').style.display = '';
-    document.getElementById('f-firma').style.display = '';
-    document.getElementById('r-firma').style.display = '';
     document.getElementById('logo-file').value = '';
   }
 
@@ -459,13 +455,13 @@
     const logoTag = logo
       ? `<img src="${logo}" style="max-height:${forPrint?'10mm':'36px'};max-width:${forPrint?'35mm':'130px'};object-fit:contain;display:block;"/>`
       : '';
-    const firmaTag = logo ? '' : `<span style="font-size:${forPrint?'7pt':'12px'};font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.85);">${firma}</span>`;
+    const firmaTag = `<span style="font-size:${forPrint?'7pt':'12px'};font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.85);">${firma}</span>`;
 
     if (fmt === 'forside') {
       const W = forPrint ? '190mm' : '718px';
       return `<div style="width:${W};background:#fff;border:2px solid #111827;font-family:'Inter',Arial,sans-serif;overflow:hidden;">
         <div style="background:${foot};padding:${forPrint?'5mm 6mm 4mm':'16px 24px 14px'};display:flex;align-items:center;justify-content:space-between;">
-          <div style="display:flex;align-items:center;gap:${forPrint?'3mm':'10px'};">${logoTag}${firmaTag}</div>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:${forPrint?'.8mm':'3px'};">${logoTag}${firmaTag}</div>
           <span style="font-size:${forPrint?'5.5pt':'10px'};font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);padding:${forPrint?'1mm 2.5mm':'3px 9px'};border:1px solid rgba(255,255,255,.2);border-radius:20px;">PROSJEKTPERM</span>
         </div>
         <div style="padding:${forPrint?'6mm 6mm 5mm':'24px 24px 18px'};">
@@ -493,12 +489,13 @@
       // RYGG: 55mm × 145mm — passar plastlomma på ryggen av standard perm
       const W = forPrint ? '55mm' : '208px';
       const H = forPrint ? '145mm' : '548px';
-      const ryggLogoTag = logo
+      const ryggLogoImg = logo
         ? `<img src="${logo}" style="max-height:${forPrint?'9mm':'36px'};max-width:${forPrint?'40mm':'150px'};object-fit:contain;"/>`
-        : `<span style="font-size:${forPrint?'6pt':'11px'};font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#374151;">${firma}</span>`;
+        : '';
+      const ryggFirmaTxt = `<span style="font-size:${forPrint?'6pt':'11px'};font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#374151;">${firma}</span>`;
       return `<div style="width:${W};height:${H};background:#fff;border:2px solid #111827;font-family:'Inter',Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden;">
         <div style="width:100%;height:${forPrint?'1.8mm':'6px'};background:${acc};flex-shrink:0;"></div>
-        <div style="padding:${forPrint?'3mm 2mm 2.5mm':'12px 8px 10px'};display:flex;align-items:center;justify-content:center;border-bottom:1px solid #e5e7eb;flex-shrink:0;">${ryggLogoTag}</div>
+        <div style="padding:${forPrint?'3mm 2mm 2.5mm':'12px 8px 10px'};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:${forPrint?'1mm':'4px'};border-bottom:1px solid #e5e7eb;flex-shrink:0;">${ryggLogoImg}${ryggFirmaTxt}</div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:${forPrint?'3.5mm 2.5mm':'14px 10px'};gap:${forPrint?'2.8mm':'11px'};">
           <div style="font-size:${forPrint?'5.5pt':'9px'};font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9ca3af;text-align:center;">Prosjekt</div>
           <div style="font-size:${forPrint?'8.5pt':'13px'};font-weight:700;color:#111827;letter-spacing:.04em;text-align:center;">${nr}</div>
