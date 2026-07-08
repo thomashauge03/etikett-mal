@@ -193,11 +193,11 @@
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        RYGG LABEL — passar plastlomma
        på ryggen av standard perm
-       Reelt mål: 53.5 × 120 mm
-       Skjerm: 202 × 454 px
+       Reelt mål: 49 × 113 mm
+       Skjerm: 185 × 427 px
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     #lbl-r {
-      width:202px; height:454px;
+      width:185px; height:427px;
       background:#fff; border:2px solid #111827;
       font-family:'Inter',Arial,sans-serif;
       display:flex; flex-direction:column; overflow:hidden;
@@ -242,7 +242,7 @@
       <p class="slabel">Format</p>
       <div class="tabs">
         <button class="tab active" id="tab-f" onclick="setFmt('forside')">Forside<br/><span style="font-size:.65rem;opacity:.6">190×130mm</span></button>
-        <button class="tab" id="tab-r" onclick="setFmt('rygg')">Rygg<br/><span style="font-size:.65rem;opacity:.6">53.5×120mm</span></button>
+        <button class="tab" id="tab-r" onclick="setFmt('rygg')">Rygg<br/><span style="font-size:.65rem;opacity:.6">49×113mm</span></button>
       </div>
     </div>
 
@@ -398,7 +398,7 @@
     document.getElementById('tab-r').classList.toggle('active', f==='rygg');
     document.getElementById('forside-wrap').style.display = f==='forside' ? '' : 'none';
     document.getElementById('rygg-wrap').style.display    = f==='rygg'    ? 'block' : 'none';
-    document.getElementById('pvtitle').textContent = f==='forside' ? 'Forside — 190 × 130 mm' : 'Rygg — 53.5 × 120 mm';
+    document.getElementById('pvtitle').textContent = f==='forside' ? 'Forside — 190 × 130 mm' : 'Rygg — 49 × 113 mm';
     document.getElementById('pvhint').textContent  = f==='rygg'
       ? 'Skriv ut på A4 · klipp ut · stikk inn i plastlommen på ryggen av permen'
       : 'Skriv ut på A4 · klipp langs stipla linjer · legg i plastlomme på permen';
@@ -574,9 +574,9 @@
         </div>
       </div>`;
     } else {
-      // RYGG: 53.5mm × 120mm — passar plastlomma på ryggen av standard perm
-      const W = forPrint ? '53.5mm' : '202px';
-      const H = forPrint ? '120mm' : '454px';
+      // RYGG: 49mm × 113mm — passar plastlomma på ryggen av standard perm
+      const W = forPrint ? '49mm' : '185px';
+      const H = forPrint ? '113mm' : '427px';
       const ryggLogoImg = logo
         ? `<img src="${logo}" style="max-height:${forPrint?'10mm':'40px'};max-width:${forPrint?'42mm':'158px'};object-fit:contain;"/>`
         : '';
@@ -619,7 +619,7 @@
   }
 
   function updateQtyHint() {
-    const dims = fmt === 'rygg' ? [53.5, 120] : [190, 130];
+    const dims = fmt === 'rygg' ? [49, 113] : [190, 130];
     const g = calcGrid(dims[0], dims[1]);
     document.getElementById('qty-hint').textContent = `${g.perPage} etikett${g.perPage === 1 ? '' : 'er'} per A4-ark`;
   }
@@ -627,7 +627,7 @@
 
   // ── Print ──
   function doPrint() {
-    const dims = fmt === 'rygg' ? [53.5, 120] : [190, 130];
+    const dims = fmt === 'rygg' ? [49, 113] : [190, 130];
     const [wMM, hMM] = dims;
     const CUT_PAD = 2; // avstand mellom etikettkant og stipla klippelinje
     const cellW = wMM + CUT_PAD * 2;
